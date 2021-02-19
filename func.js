@@ -400,3 +400,11 @@ export const dateFormater = function (formater, t){
     .replace(/mm/g, (m < 10 ? '0' : '') + m)
     .replace(/ss/g, (s < 10 ? '0' : '') + s)
 }
+/**得到当前时间之后N秒的时间
+ * @param {*} after 多少秒之后的时间
+ * @举例 afterNsecond(20)  // 20s之后的时间
+ */
+export const afterNsecond = function (after = 60) {
+  const dt = new Date()
+  return new Date(dt.getTime() + after * 1000)
+}
