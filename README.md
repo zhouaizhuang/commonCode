@@ -1,2 +1,3 @@
 # commonFunc
-一些常用的js工具函数
+# applet.js: 封装一些小程序中的函数
+# func.js：封装一些公用函数 
