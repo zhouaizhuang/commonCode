@@ -92,4 +92,4 @@
 /* 边框圆角 */
 .rds1{border-radius:1rpx;}   .rds2{border-radius:2rpx;}  .rds5{border-radius:5rpx;}    .rds10{border-radius:10rpx;}  .rds15{border-radius:15rpx;}  .rds20{border-radius:20rpx;}  .rds30{border-radius:30rpx;}  .rds50{border-radius:50%;}
 /* 表单必填*号 */
-.require::after{ content: '*'; color: #FF6F4A; font-size: 16rpx; margin-left: 12rpx; }
+.require::after{ content: '*'; color: #FF6F4A; font-size: 16rpx; margin-left: 12rpx;}
