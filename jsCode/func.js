@@ -152,7 +152,11 @@ export const checkJSON = function (obj) {
 export const JSON2url = function (url = '', params = {}){
   params = formatJSON(params)
   return Object.keys(params).reduce((prev, item, index) => {
-    prev += index === 0 ? '?' : '&'
+    if(url) {
+      prev += index === 0 ? '?' : '&'
+    } else if(index !== 0) {
+      prev += '&'
+    }
     prev += `${item}=${params[item]}`
     return prev
   }, url) || ''
