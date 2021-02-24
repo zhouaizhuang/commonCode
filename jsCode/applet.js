@@ -1,3 +1,4 @@
+/* 小程序公用js代码 */
 import { isError, isObject } from './func.js'
 /*
 **************小程序api操作********************
