@@ -43,9 +43,9 @@ Validator.prototype.start = function() {
 function checkForm(){
   const [userName, password, phoneNumber] = ['123', 'asdsassaasd', '15388178152']
   var validator = new Validator() // 创建一个 validator 对象
-  validator.add(userName, { "isRequire": '用户名不能为空', "minLength:5": "用户名长度不能少于5位" }) // 通过冒号进行额外参数的传递
-  validator.add(password, { 'minLength:10': '密码长度不能少于6位' })
-  validator.add(phoneNumber, { 'isPhone': '请输入正确的手机号码' })
+  validator.add(userName, { "isRequire": "用户名不能为空", "minLength:5": "用户名长度不能少于5位" }) // 通过冒号进行额外参数的传递
+  validator.add(password, { "minLength:10": "密码长度不能少于6位" })
+  validator.add(phoneNumber, { "isPhone": "请输入正确的手机号码" })
   var errorMsg = validator.start() // 获得校验结果
   console.log(errorMsg)
   return errorMsg
