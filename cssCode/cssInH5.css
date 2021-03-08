@@ -22,15 +22,15 @@
 .h35{height:35%;}   .h40{height:40%;}   .h45{height:45%;}   .h50{height:50%;}   .h55{height:55%;}   .h60{height:60%;}   .h65{height:65%;}
 .h70{height:70%;}   .h75{height:75%;}   .h80{height:80%;}   .h85{height:85%;}   .h90{height:90%;}   .h95{height:95%;}   .h100{height:100%;} 
 /* 外边距 */
-.mt5{margin-top:0.05rem;}    .mt10{margin-top:0.1rem;}     .mt15{margin-top:0.15rem;}     .mt20{margin-top:0.2rem;}    .mt25{margin-top:0.25rem;}     .mt30{margin-top:0.3rem;}  
-.mr5{margin-right:0.05rem;}  .mr10{margin-right:0.1rem;}   .mr15{margin-right:0.15rem;}   .mr20{margin-right:0.2rem;}  .mr25{margin-right:0.25rem;}   .mr30{margin-right:0.3rem;}  
-.mb5{margin-bottom:0.05rem;} .mb10{margin-bottom:0.1rem;}  .mb15{margin-bottom:0.15rem;}  .mb20{margin-bottom:0.2rem;} .mb25{margin-bottom:0.25rem;}  .mb30{margin-bottom:0.3rem;}  
-.ml5{margin-left:0.05rem;}   .ml10{margin-left:0.1rem;}    .ml15{margin-left:0.15rem;}    .ml20{margin-left:0.2rem;}   .ml25{margin-left:0.25rem;}    .ml30{margin-left:0.3rem;}  
+.mt5r{margin-top:0.05rem;}    .mt10r{margin-top:0.1rem;}     .mt15r{margin-top:0.15rem;}     .mt20r{margin-top:0.2rem;}    .mt25r{margin-top:0.25rem;}     .mt30r{margin-top:0.3rem;}  
+.mr5r{margin-right:0.05rem;}  .mr10r{margin-right:0.1rem;}   .mr15r{margin-right:0.15rem;}   .mr20r{margin-right:0.2rem;}  .mr25r{margin-right:0.25rem;}   .mr30r{margin-right:0.3rem;}  
+.mb5r{margin-bottom:0.05rem;} .mb10r{margin-bottom:0.1rem;}  .mb15r{margin-bottom:0.15rem;}  .mb20r{margin-bottom:0.2rem;} .mb25r{margin-bottom:0.25rem;}  .mb30r{margin-bottom:0.3rem;}  
+.ml5r{margin-left:0.05rem;}   .ml10r{margin-left:0.1rem;}    .ml15r{margin-left:0.15rem;}    .ml20r{margin-left:0.2rem;}   .ml25r{margin-left:0.25rem;}    .ml30r{margin-left:0.3rem;}  
 /* 内边距 */
-.pt5{padding-top:0.05rem;}     .pt10{padding-top:0.1rem;}     .pt15{padding-top:0.15rem;}     .pt20{padding-top:0.2rem;}     .pt25{padding-top:0.25rem;}      .pt30{padding-top:0.3rem;}  
-.pr5{padding-right:0.05rem;}   .pr10{padding-right:0.1rem;}   .pr15{padding-right:0.15rem;}   .pr20{padding-right:0.2rem;}   .pr25{padding-right:0.25rem;}    .pr30{padding-right:0.3rem;}  
-.pb5{padding-bottom:0.05rem;}  .pb10{padding-bottom:0.1rem;}  .pb15{padding-bottom:0.15rem;}  .pb20{padding-bottom:0.2rem;}  .pb25{padding-bottom:0.25rem;}   .pb30{padding-bottom:0.3rem;}  
-.pl5{padding-top:0.05rem;}     .pl10{padding-top:0.1rem;}     .pl15{padding-top:0.15rem;}     .pl20{padding-top:0.2rem;}     .pl25{padding-top:0.25rem;}      .pl30{padding-top:0.3rem;}  
+.pt5r{padding-top:0.05rem;}     .pt10r{padding-top:0.1rem;}     .pt15r{padding-top:0.15rem;}     .pt20r{padding-top:0.2rem;}     .pt25{padding-top:0.25rem;}      .pt30r{padding-top:0.3rem;}  
+.pr5r{padding-right:0.05rem;}   .pr10r{padding-right:0.1rem;}   .pr15r{padding-right:0.15rem;}   .pr20r{padding-right:0.2rem;}   .pr25{padding-right:0.25rem;}    .pr30r{padding-right:0.3rem;}  
+.pb5r{padding-bottom:0.05rem;}  .pb10r{padding-bottom:0.1rem;}  .pb15r{padding-bottom:0.15rem;}  .pb20r{padding-bottom:0.2rem;}  .pb25{padding-bottom:0.25rem;}   .pb30r{padding-bottom:0.3rem;}  
+.pl5r{padding-top:0.05rem;}     .pl10r{padding-top:0.1rem;}     .pl15r{padding-top:0.15rem;}     .pl20r{padding-top:0.2rem;}     .pl25{padding-top:0.25rem;}      .pl30r{padding-top:0.3rem;}  
 /* 边框、外线为0 */
 .bd{border:0.01rem solid;} .bd0{border:0; outline:none;}
 .bdc{border: 0.01rem solid #ccc;}
@@ -47,11 +47,11 @@
 /* 对齐方式*/
 .tl{text-align: left;} .tc{text-align: center;} .tr{text-align: right;}
 /* 文字间距 */
-.lt5{letter-spacing: 0.05rem;}
+.lt5r{letter-spacing: 0.05rem;}
 /* 字体大小 */
-.fs0{font-size:0;} .fs12{font-size:0.12rem;} .fs14{font-size:0.14rem;} .fs16{font-size:0.16rem;} .fs18{font-size:0.18rem;}
-.fs20{font-size:0.2rem;} .fs22{font-size:0.22rem;} .fs24{font-size:0.24rem;} .fs26{font-size:0.26rem;} .fs28{font-size:0.28rem;}
-.fs30{font-size:0.3rem;} .fs32{font-size:0.32rem;}
+.fs0{font-size:0;} .fs12r{font-size:0.12rem;} .fs14r{font-size:0.14rem;} .fs16r{font-size:0.16rem;} .fs18r{font-size:0.18rem;}
+.fs20r{font-size:0.2rem;} .fs22r{font-size:0.22rem;} .fs24r{font-size:0.24rem;} .fs26r{font-size:0.26rem;} .fs28r{font-size:0.28rem;}
+.fs30r{font-size:0.3rem;} .fs32r{font-size:0.32rem;}
 /*字体粗细 浏览器支持不了全部*/
 .fw1{font-weight:100;} .fw2{font-weight:200;}  .fw3{font-weight:300;}  .fw4{font-weight:400;} .fw5{font-weight:500;} .fw6{font-weight:600;}  .fw7{font-weight:700;}  .fw8{font-weight:800;}  .fw9{font-weight:900;}
 /* 加粗、倾斜 */
@@ -73,10 +73,10 @@
 .fixed{position: fixed;} .rel{position:relative;} .abs{position:absolute;}
 .zx-1{z-index:-1;} .zx10{z-index:10;} .zx20{z-index:20;} .zx30{z-index:30;}  .zx40{z-index:40;} .zx50{z-index:50;} .zx60{z-index:60;} .zx70{z-index:70;}  .zx80{z-index:80;} .zx90{z-index:90;} .zx100{z-index:100;} .zx1000{z-index:1000;} 
 .trbl0{top:0;right:0;bottom:0;left:0;}
-.t0{top:0;}    .t1{top:0.01rem;}    .t2{top:0.02rem;}    .t5{top:0.05rem;}    .t10{top:0.1rem;}    .t15{top:0.15rem;}    .t20{top:0.2rem;}    .t30{top:0.3rem;}
-.r0{right:0;}  .r1{right:0.01rem;}  .r2{right:0.02rem;}  .r5{right:0.05rem;}  .r10{right:0.1rem;}  .r15{right:0.15rem;}  .r20{right:0.2rem;}  .r30{right:0.3rem;}
-.b0{bottom:0;} .b1{bottom:0.01rem;} .b2{bottom:0.02rem;} .b5{bottom:0.05rem;} .b10{bottom:0.1rem;} .b15{bottom:0.15rem;} .b20{bottom:0.2rem;} .b30{bottom:0.3rem;}
-.l0{left:0;}   .l1{left:0.01rem;}   .l2{left:0.02rem;}   .l5{left:0.05rem;}   .l10{left:0.1rem;}   .l15{left:0.15rem;}   .l20{left:0.2rem;}   .l30{left:0.3rem;}
+.t0{top:0;}    .t1r{top:0.01rem;}    .t2r{top:0.02rem;}    .t5r{top:0.05rem;}    .t10r{top:0.1rem;}    .t15r{top:0.15rem;}    .t20r{top:0.2rem;}    .t30r{top:0.3rem;}
+.r0{right:0;}  .r1r{right:0.01rem;}  .r2r{right:0.02rem;}  .r5r{right:0.05rem;}  .r10r{right:0.1rem;}  .r15r{right:0.15rem;}  .r20r{right:0.2rem;}  .r30r{right:0.3rem;}
+.b0{bottom:0;} .b1r{bottom:0.01rem;} .b2r{bottom:0.02rem;} .b5r{bottom:0.05rem;} .b10r{bottom:0.1rem;} .b15r{bottom:0.15rem;} .b20r{bottom:0.2rem;} .b30r{bottom:0.3rem;}
+.l0{left:0;}   .l1r{left:0.01rem;}   .l2r{left:0.02rem;}   .l5r{left:0.05rem;}   .l10r{left:0.1rem;}   .l15r{left:0.15rem;}   .l20r{left:0.2rem;}   .l30r{left:0.3rem;}
 /* cursor鼠标显示 */
 .poi{cursor:pointer;}    .def{cursor:default;}
 /* 左右居中 */
@@ -90,6 +90,6 @@
 .disable{opacity:0.5; pointer-events:none;}
 .disable:hover{cursor:no-drop;}
 /* 边框圆角 */
-.rds1{border-radius:0.01rem;}   .rds2{border-radius:0.02rem;}  .rds5{border-radius:0.05rem;}    .rds10{border-radius:0.1rem;}  .rds15{border-radius:0.15rem;}  .rds20{border-radius:0.2rem;}  .rds30{border-radius:0.3rem;}  .rds50{border-radius:50%;}
+.rds1r{border-radius:0.01rem;}   .rds2r{border-radius:0.02rem;}  .rds5r{border-radius:0.05rem;}    .rds10r{border-radius:0.1rem;}  .rds15{border-radius:0.15rem;}  .rds20{border-radius:0.2rem;}  .rds30{border-radius:0.3rem;}  .rds50{border-radius:50%;}
 /* 表单必填*号 */
 .require::after{ content: '*'; color: #FF6F4A; font-size: 0.16rem; margin-left: 0.12rem; }

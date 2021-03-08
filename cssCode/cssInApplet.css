@@ -22,15 +22,15 @@
 .h35{height:35%;}   .h40{height:40%;}   .h45{height:45%;}   .h50{height:50%;}   .h55{height:55%;}   .h60{height:60%;}   .h65{height:65%;}
 .h70{height:70%;}   .h75{height:75%;}   .h80{height:80%;}   .h85{height:85%;}   .h90{height:90%;}   .h95{height:95%;}   .h100{height:100%;} 
 /* 外边距 */
-.mt5{margin-top:5rpx;}    .mt10{margin-top:10rpx;}     .mt15{margin-top:15rpx;}     .mt20{margin-top:20rpx;}    .mt25{margin-top:25rpx;}     .mt30{margin-top:30rpx;}  
-.mr5{margin-right:5rpx;}  .mr10{margin-right:10rpx;}   .mr15{margin-right:15rpx;}   .mr20{margin-right:20rpx;}  .mr25{margin-right:25rpx;}   .mr30{margin-right:30rpx;}  
-.mb5{margin-bottom:5rpx;} .mb10{margin-bottom:10rpx;}  .mb15{margin-bottom:15rpx;}  .mb20{margin-bottom:20rpx;} .mb25{margin-bottom:25rpx;}  .mb30{margin-bottom:30rpx;}  
-.ml5{margin-left:5rpx;}   .ml10{margin-left:10rpx;}    .ml15{margin-left:15rpx;}    .ml20{margin-left:20rpx;}   .ml25{margin-left:25rpx;}    .ml30{margin-left:30rpx;}  
+.mt5r{margin-top:5rpx;}    .mt10r{margin-top:10rpx;}     .mt15r{margin-top:15rpx;}     .mt20r{margin-top:20rpx;}    .mt25r{margin-top:25rpx;}     .mt30r{margin-top:30rpx;}  
+.mr5r{margin-right:5rpx;}  .mr10r{margin-right:10rpx;}   .mr15r{margin-right:15rpx;}   .mr20r{margin-right:20rpx;}  .mr25r{margin-right:25rpx;}   .mr30r{margin-right:30rpx;}  
+.mb5r{margin-bottom:5rpx;} .mb10r{margin-bottom:10rpx;}  .mb15r{margin-bottom:15rpx;}  .mb20r{margin-bottom:20rpx;} .mb25r{margin-bottom:25rpx;}  .mb30r{margin-bottom:30rpx;}  
+.ml5r{margin-left:5rpx;}   .ml10r{margin-left:10rpx;}    .ml15r{margin-left:15rpx;}    .ml20r{margin-left:20rpx;}   .ml25r{margin-left:25rpx;}    .ml30r{margin-left:30rpx;}  
 /* 内边距 */
-.pt5{padding-top:5rpx;}     .pt10{padding-top:10rpx;}     .pt15{padding-top:15rpx;}     .pt20{padding-top:20rpx;}     .pt25{padding-top:25rpx;}      .pt30{padding-top:30rpx;}  
-.pr5{padding-right:5rpx;}   .pr10{padding-right:10rpx;}   .pr15{padding-right:15rpx;}   .pr20{padding-right:20rpx;}   .pr25{padding-right:25rpx;}    .pr30{padding-right:30rpx;}  
-.pb5{padding-bottom:5rpx;}  .pb10{padding-bottom:10rpx;}  .pb15{padding-bottom:15rpx;}  .pb20{padding-bottom:20rpx;}  .pb25{padding-bottom:25rpx;}   .pb30{padding-bottom:30rpx;}  
-.pl5{padding-top:5rpx;}     .pl10{padding-top:10rpx;}     .pl15{padding-top:15rpx;}     .pl20{padding-top:20rpx;}     .pl25{padding-top:25rpx;}      .pl30{padding-top:30rpx;}  
+.pt5r{padding-top:5rpx;}     .pt10r{padding-top:10rpx;}     .pt15r{padding-top:15rpx;}     .pt20r{padding-top:20rpx;}     .pt25r{padding-top:25rpx;}      .pt30r{padding-top:30rpx;}  
+.pr5r{padding-right:5rpx;}   .pr10r{padding-right:10rpx;}   .pr15r{padding-right:15rpx;}   .pr20r{padding-right:20rpx;}   .pr25r{padding-right:25rpx;}    .pr30r{padding-right:30rpx;}  
+.pb5r{padding-bottom:5rpx;}  .pb10r{padding-bottom:10rpx;}  .pb15r{padding-bottom:15rpx;}  .pb20r{padding-bottom:20rpx;}  .pb25r{padding-bottom:25rpx;}   .pb30r{padding-bottom:30rpx;}  
+.pl5r{padding-top:5rpx;}     .pl10r{padding-top:10rpx;}     .pl15r{padding-top:15rpx;}     .pl20r{padding-top:20rpx;}     .pl25r{padding-top:25rpx;}      .pl30r{padding-top:30rpx;}  
 /* 边框、外线为0 */
 .bd{border:1rpx solid;} .bd0{border:0; outline:none;}
 .bdc{border: 1rpx solid #ccc;}
@@ -49,9 +49,9 @@
 /* 文字间距 */
 .lt5{letter-spacing: 5rpx;}
 /* 字体大小 */
-.fs0{font-size:0;} .fs12{font-size:12rpx;} .fs14{font-size:14rpx;} .fs16{font-size:16rpx;} .fs18{font-size:18rpx;}
-.fs20{font-size:20rpx;} .fs22{font-size:22rpx;} .fs24{font-size:24rpx;} .fs26{font-size:26rpx;} .fs28{font-size:28rpx;}
-.fs30{font-size:30rpx;} .fs32{font-size:32rpx;}
+.fs0{font-size:0;} .fs12r{font-size:12rpx;} .fs14r{font-size:14rpx;} .fs16r{font-size:16rpx;} .fs18r{font-size:18rpx;}
+.fs20r{font-size:20rpx;} .fs22r{font-size:22rpx;} .fs24r{font-size:24rpx;} .fs26r{font-size:26rpx;} .fs28r{font-size:28rpx;}
+.fs30r{font-size:30rpx;} .fs32r{font-size:32rpx;}
 /*字体粗细 浏览器支持不了全部*/
 .fw1{font-weight:100;} .fw2{font-weight:200;}  .fw3{font-weight:300;}  .fw4{font-weight:400;} .fw5{font-weight:500;} .fw6{font-weight:600;}  .fw7{font-weight:700;}  .fw8{font-weight:800;}  .fw9{font-weight:900;}
 /* 加粗、倾斜 */
@@ -73,10 +73,10 @@
 .fixed{position: fixed;} .rel{position:relative;} .abs{position:absolute;}
 .zx-1{z-index:-1;} .zx10{z-index:10;} .zx20{z-index:20;} .zx30{z-index:30;}  .zx40{z-index:40;} .zx50{z-index:50;} .zx60{z-index:60;} .zx70{z-index:70;}  .zx80{z-index:80;} .zx90{z-index:90;} .zx100{z-index:100;} .zx1000{z-index:1000;} 
 .trbl0{top:0;right:0;bottom:0;left:0;}
-.t0{top:0;}    .t1{top:1rpx;}    .t2{top:2rpx;}    .t5{top:5rpx;}    .t10{top:10rpx;}    .t15{top:15rpx;}    .t20{top:20rpx;}    .t30{top:30rpx;}
-.r0{right:0;}  .r1{right:1rpx;}  .r2{right:2rpx;}  .r5{right:5rpx;}  .r10{right:10rpx;}  .r15{right:15rpx;}  .r20{right:20rpx;}  .r30{right:30rpx;}
-.b0{bottom:0;} .b1{bottom:1rpx;} .b2{bottom:2rpx;} .b5{bottom:5rpx;} .b10{bottom:10rpx;} .b15{bottom:15rpx;} .b20{bottom:20rpx;} .b30{bottom:30rpx;}
-.l0{left:0;}   .l1{left:1rpx;}   .l2{left:2rpx;}   .l5{left:5rpx;}   .l10{left:10rpx;}   .l15{left:15rpx;}   .l20{left:20rpx;}   .l30{left:30rpx;}
+.t0{top:0;}    .t1r{top:1rpx;}    .t2r{top:2rpx;}    .t5r{top:5rpx;}    .t10r{top:10rpx;}    .t15r{top:15rpx;}    .t20r{top:20rpx;}    .t30r{top:30rpx;}
+.r0{right:0;}  .r1r{right:1rpx;}  .r2r{right:2rpx;}  .r5r{right:5rpx;}  .r10r{right:10rpx;}  .r15r{right:15rpx;}  .r20r{right:20rpx;}  .r30r{right:30rpx;}
+.b0{bottom:0;} .b1r{bottom:1rpx;} .b2r{bottom:2rpx;} .b5r{bottom:5rpx;} .b10r{bottom:10rpx;} .b15r{bottom:15rpx;} .b20r{bottom:20rpx;} .b30r{bottom:30rpx;}
+.l0{left:0;}   .l1r{left:1rpx;}   .l2r{left:2rpx;}   .l5r{left:5rpx;}   .l10r{left:10rpx;}   .l15r{left:15rpx;}   .l20r{left:20rpx;}   .l30r{left:30rpx;}
 /* cursor鼠标显示 */
 .poi{cursor:pointer;}    .def{cursor:default;}
 /* 左右居中 */
@@ -90,6 +90,6 @@
 .disable{opacity:0.5; pointer-events:none;}
 .disable:hover{cursor:no-drop;}
 /* 边框圆角 */
-.rds1{border-radius:1rpx;}   .rds2{border-radius:2rpx;}  .rds5{border-radius:5rpx;}    .rds10{border-radius:10rpx;}  .rds15{border-radius:15rpx;}  .rds20{border-radius:20rpx;}  .rds30{border-radius:30rpx;}  .rds50{border-radius:50%;}
+.rds1r{border-radius:1rpx;}   .rds2r{border-radius:2rpx;}  .rds5r{border-radius:5rpx;}    .rds10r{border-radius:10rpx;}  .rds15r{border-radius:15rpx;}  .rds20r{border-radius:20rpx;}  .rds30r{border-radius:30rpx;}  .rds50{border-radius:50%;}
 /* 表单必填*号 */
 .require::after{ content: '*'; color: #FF6F4A; font-size: 16rpx; margin-left: 12rpx;}

@@ -49,9 +49,9 @@
 /* 文字间距 */
 .lt5{letter-spacing: 5px;}
 /* 字体大小 */
-.fs0px{font-size:0;} .fs12px{font-size:12px;} .fs14px{font-size:14px;} .fs16px{font-size:16px;} .fs18px{font-size:18px;}
-.fs20px{font-size:20px;} .fs22px{font-size:22px;} .fs24px{font-size:24px;} .fs26px{font-size:26px;} .fs28px{font-size:28px;}
-.fs30px{font-size:30px;} .fs32px{font-size:32px;}
+.fs0{font-size:0;} .fs12{font-size:12px;} .fs14{font-size:14px;} .fs16{font-size:16px;} .fs18{font-size:18px;}
+.fs20{font-size:20px;} .fs22{font-size:22px;} .fs24{font-size:24px;} .fs26{font-size:26px;} .fs28{font-size:28px;}
+.fs30{font-size:30px;} .fs32{font-size:32px;}
 /*字体粗细 浏览器支持不了全部*/
 .fw1{font-weight:100;} .fw2{font-weight:200;}  .fw3{font-weight:300;}  .fw4{font-weight:400;} .fw5{font-weight:500;} .fw6{font-weight:600;}  .fw7{font-weight:700;}  .fw8{font-weight:800;}  .fw9{font-weight:900;}
 /* 加粗、倾斜 */
