@@ -30,7 +30,7 @@
 .pt5r{padding-top:0.05rem;}     .pt10r{padding-top:0.1rem;}     .pt15r{padding-top:0.15rem;}     .pt20r{padding-top:0.2rem;}     .pt25{padding-top:0.25rem;}      .pt30r{padding-top:0.3rem;}  
 .pr5r{padding-right:0.05rem;}   .pr10r{padding-right:0.1rem;}   .pr15r{padding-right:0.15rem;}   .pr20r{padding-right:0.2rem;}   .pr25{padding-right:0.25rem;}    .pr30r{padding-right:0.3rem;}  
 .pb5r{padding-bottom:0.05rem;}  .pb10r{padding-bottom:0.1rem;}  .pb15r{padding-bottom:0.15rem;}  .pb20r{padding-bottom:0.2rem;}  .pb25{padding-bottom:0.25rem;}   .pb30r{padding-bottom:0.3rem;}  
-.pl5r{padding-top:0.05rem;}     .pl10r{padding-top:0.1rem;}     .pl15r{padding-top:0.15rem;}     .pl20r{padding-top:0.2rem;}     .pl25{padding-top:0.25rem;}      .pl30r{padding-top:0.3rem;}  
+.pl5r{padding-left:0.05rem;}     .pl10r{padding-left:0.1rem;}     .pl15r{padding-left:0.15rem;}     .pl20r{padding-left:0.2rem;}     .pl25{padding-left:0.25rem;}      .pl30r{padding-left:0.3rem;}  
 /* 边框、外线为0 */
 .bd{border:0.01rem solid;} .bd0{border:0; outline:none;}
 .bdc{border: 0.01rem solid #ccc;}

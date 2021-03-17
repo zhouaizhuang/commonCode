@@ -30,7 +30,7 @@
 .pt5{padding-top:5px;}     .pt10{padding-top:10px;}     .pt15{padding-top:15px;}     .pt20{padding-top:20px;}     .pt25{padding-top:25px;}      .pt30{padding-top:30px;}  
 .pr5{padding-right:5px;}   .pr10{padding-right:10px;}   .pr15{padding-right:15px;}   .pr20{padding-right:20px;}   .pr25{padding-right:25px;}    .pr30{padding-right:30px;}  
 .pb5{padding-bottom:5px;}  .pb10{padding-bottom:10px;}  .pb15{padding-bottom:15px;}  .pb20{padding-bottom:20px;}  .pb25{padding-bottom:25px;}   .pb30{padding-bottom:30px;}  
-.pl5{padding-top:5px;}     .pl10{padding-top:10px;}     .pl15{padding-top:15px;}     .pl20{padding-top:20px;}     .pl25{padding-top:25px;}      .pl30{padding-top:30px;}  
+.pl5{padding-left:5px;}     .pl10{padding-left:10px;}     .pl15{padding-left:15px;}     .pl20{padding-left:20px;}     .pl25{padding-left:25px;}      .pl30{padding-left:30px;}  
 /* 边框、外线为0 */
 .bd{border:1px solid;} .bd0{border:0; outline:none;}
 .bdc{border: 1px solid #ccc;}
