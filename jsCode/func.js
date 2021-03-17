@@ -12,6 +12,8 @@ export const isString = isType('String')
 export const isNumber = isType('Number')
 export const isDate = isType('Date')
 export const isError = isType('Error')
+export const isGt0 = val => /^\+?[1-9][0-9]*$/.test(val) // 是否是大于0的整数
+export const isGtEq0 = val => /^\+?[1-9][0-9]*$/.test(val) || String(val) === '0' // 是否是大于等于0的整数
 // 深拷贝
 export const deepCopy = function (obj) {
   if(!(isArray(obj) || isObject(obj))) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
@@ -152,11 +154,7 @@ export const checkJSON = function (obj) {
 export const JSON2url = function (url = '', params = {}){
   params = formatJSON(params)
   return Object.keys(params).reduce((prev, item, index) => {
-    if(url) {
-      prev += index === 0 ? '?' : '&'
-    } else if(index !== 0) {
-      prev += '&'
-    }
+    prev += prev.includes('?') ? '&' : '?'
     prev += `${item}=${params[item]}`
     return prev
   }, url) || ''
