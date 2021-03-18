@@ -1,0 +1,59 @@
+<!---仅仅是提供个demo,具体项目需要自己根据UI更改并优化-->
+<html>
+<head>
+  <style>
+    div{
+      width:100%;
+      text-align:center;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+<div id="go"></div>
+<script>
+  function countTime(time,id) {
+    var date = new Date()
+    var now = date.getTime()             
+    var endDate = new Date(time) //设置截止时间
+    var end = endDate.getTime()
+    var leftTime = end - now //时间差
+    var d, h, m, s, ms
+    if(leftTime >= 0) {
+      d = Math.floor(leftTime / 1000 / 60 / 60 / 24);
+      h = Math.floor(leftTime / 1000 / 60 / 60 % 24);
+      m = Math.floor(leftTime / 1000 / 60 % 60);
+      s = Math.floor(leftTime / 1000 % 60);
+      ms = Math.floor(leftTime % 1000);
+      if(ms < 100) {
+        ms = "0" + ms
+      }
+      if(s < 10) {
+        s = "0" + s
+      }
+      if(m < 10) {
+        m = "0" + m
+      }
+      if(h < 10) {
+        h = "0" + h
+      }
+      //将倒计时赋值到div中
+      document.getElementById(id).innerHTML = d + "天" + h + "时" + m + "分" + s + "秒"+  ms + "毫秒";
+    } else {
+      console.log('已截止')
+      //将倒计时赋值到div中
+      document.getElementById(id).innerHTML = "已开抢"
+    }
+    //递归每秒调用countTime方法，显示动态时间效果
+    return leftTime
+  }
+  //调用方式  需要传入  结束时间   和 倒计时内容所在的id名称
+  var s = setInterval(function (){
+    var dates = countTime("2021-7-2 10:32:00", "go");
+    if(dates <= 0) {
+      clearInterval(s)
+    }
+  },50)
+</script>
+</body>
+</html>
