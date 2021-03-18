@@ -11,3 +11,29 @@
   docEl.setAttribute('data-dpr', dpr) // 设置data-dpr属性，留作的css hack之用，解决图片模糊问题和1px细线问题
   docEl.style.fontSize = rem + 'px' // 动态写入样式
 })(document, window)
+
+
+/**检查浏览器是否是手机微信浏览器 */
+(function (){
+  var useragent = navigator.userAgent
+  if (!useragent.match(/MicroMessenger/i) || !(navigator.userAgent.match(/(iPhone|iPod|Android|ios|iOS|iPad|Backerry|WebOS|Symbian|Windows Phone|Phone)/i))) {
+    alert('已禁止本次访问：您必须使用微信内置浏览器访问本页面！')
+  }
+})()
+
+
+// 移动端真机调试核心代码
+// 1、安装  npm install vconsole
+import VConsole from 'vconsole'
+let showVConsoleTimer = null
+document.addEventListener('touchstart', function () {
+  clearTimeout(showVConsoleTimer)
+  showVConsoleTimer = setTimeout(() => {
+    const vConsole = new VConsole()
+  }, 8000)
+})
+document.addEventListener('touchend', function () {
+  clearTimeout(showVConsoleTimer)
+})
+
+

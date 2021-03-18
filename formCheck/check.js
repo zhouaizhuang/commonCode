@@ -19,7 +19,7 @@ const check = {
 }
 
 // 表单校验实例
-const Validator = function () {
+export const Validator = function () {
   this.cache = [] // 保存校验规则
 }
 // 添加校验函数
@@ -40,6 +40,7 @@ Validator.prototype.start = function() {
   }
 }
 /**使用方法 */
+import { Validator } from '/xxx/xxx/check.js'
 function checkForm(){
   const [userName, password, phoneNumber] = ['123', 'asdsassaasd', '15388178152']
   var validator = new Validator() // 创建一个 validator 对象
