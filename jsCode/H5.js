@@ -24,6 +24,7 @@
 
 // 移动端真机调试核心代码
 // 1、安装  npm install vconsole
+// 然后在main.js中执行
 import VConsole from 'vconsole'
 let showVConsoleTimer = null
 document.addEventListener('touchstart', function () {
@@ -35,5 +36,3 @@ document.addEventListener('touchstart', function () {
 document.addEventListener('touchend', function () {
   clearTimeout(showVConsoleTimer)
 })
-
-
