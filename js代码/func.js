@@ -346,6 +346,10 @@ export const round = function (num, prec = 0) {
 }
 // 上限为lower
 export const range = function (num, min = null, max = null) {
+  if(!isNumber(num)) {
+    console.error('传入的数据有误')
+    return min || 0
+  }
   if(min !== null) {
     num = num < min ? min : num
   }
