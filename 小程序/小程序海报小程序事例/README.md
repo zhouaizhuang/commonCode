@@ -1,3 +1,4 @@
+# https://developers.weixin.qq.com/community/develop/article/doc/000e222d9bcc305c5739c718d56813
 # Painter
 
 **Painter 的优势**
