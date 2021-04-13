@@ -30,10 +30,11 @@ abort()
  * 2、进阶版本，更通用
  * 可以解决任意一个promise函数的无法取消问题
  */
+// 封装一个函数接收一个请求函数，返回一个执行请求函数的方法，和中止请求函数的方法
 function promisePro(func){
   let _resolve, _reject
   return {
-    allowAbortPromise: function (){
+    allowAbortPromise: () => {
       return new Promise((resolve, reject) => {
         [_resolve, _reject] = [resolve, reject]
         func && func(resolve, reject)
