@@ -56,3 +56,41 @@ function getUserList(resolve, reject){
 const { allowAbortPromise, abort } = promisePro(getUserList)
 allowAbortPromise().then(console.log).catch(e => console.log(e.message))
 abort({message: "中止了获取用户列表getUserList的请求"})
+
+
+
+
+/************promise.race方案************** */
+function getPromiseWithAbort(p){
+  let obj = {}
+  //内部定一个新的promise，用来终止执行
+  let p1 = new Promise(function(resolve, reject){
+    obj.abort = reject
+  })
+  obj.promise = Promise.race([p, p1])
+  return obj
+}
+var promise  = new Promise((resolve)=>{
+  setTimeout(()=>{
+    resolve('123')
+  }, 3000)
+ })
+ var obj = getPromiseWithAbort(promise)
+ obj.promise.then(res=>{console.log(res)})
+ //如果要取消
+ obj.abort('取消执行')
+
+
+
+
+
+ /***********使用全局变量控制********* */
+ export const guID = function () {
+  return Number(Math.random().toString().substr(3, 8) + Date.now()).toString(36)
+}
+let currentId = guID()
+request('').then(res => {
+  if(res.currentId === currentId) {
+    this.setData({list: res})
+  }
+}).catch(console.log)
