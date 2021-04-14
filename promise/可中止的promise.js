@@ -84,8 +84,8 @@ var promise  = new Promise((resolve)=>{
 
 
 
- /***********使用全局变量控制********* */
- export const guID = function () {
+/***********使用全局变量控制********* */
+export const guID = function () {
   return Number(Math.random().toString().substr(3, 8) + Date.now()).toString(36)
 }
 let currentId = guID()
