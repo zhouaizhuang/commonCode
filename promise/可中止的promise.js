@@ -88,9 +88,11 @@ var promise  = new Promise((resolve)=>{
 export const guID = function () {
   return Number(Math.random().toString().substr(3, 8) + Date.now()).toString(36)
 }
-let currentId = guID()
-request('').then(res => {
-  if(res.currentId === currentId) {
-    this.setData({list: res})
-  }
-}).catch(console.log)
+function getList(){
+  let currentId = guID()
+  request('').then(res => {
+    if(res.currentId === currentId) {
+      this.setData({list: res})
+    }
+  }).catch(console.log)
+}
