@@ -51,7 +51,7 @@
 /* 字体大小 */
 .fs0{font-size:0;} .fs12r{font-size:0.12rem;} .fs14r{font-size:0.14rem;} .fs16r{font-size:0.16rem;} .fs18r{font-size:0.18rem;}
 .fs20r{font-size:0.2rem;} .fs22r{font-size:0.22rem;} .fs24r{font-size:0.24rem;} .fs26r{font-size:0.26rem;} .fs28r{font-size:0.28rem;}
-.fs30r{font-size:0.3rem;} .fs32r{font-size:0.32rem;}
+.fs30r{font-size:0.3rem;} .fs32r{font-size:0.32rem;} .fs34r{font-size: 0.34rem;} .fs36r{font-size: 0.36rem;} .fs38r{font-size: 0.38rem;}
 /*字体粗细 浏览器支持不了全部*/
 .fw1{font-weight:100;} .fw2{font-weight:200;}  .fw3{font-weight:300;}  .fw4{font-weight:400;} .fw5{font-weight:500;} .fw6{font-weight:600;}  .fw7{font-weight:700;}  .fw8{font-weight:800;}  .fw9{font-weight:900;}
 /* 加粗、倾斜 */

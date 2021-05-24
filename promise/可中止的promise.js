@@ -60,7 +60,7 @@ abort({message: "中止了获取用户列表getUserList的请求"})
 
 
 
-/************promise.race方案************** */
+/************3、promise.race方案************** */
 function getPromiseWithAbort(p){
   let obj = {}
   //内部定一个新的promise，用来终止执行
