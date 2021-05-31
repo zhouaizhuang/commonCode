@@ -123,6 +123,19 @@ export const addZero = function (str, num) {
 export const length = function (str) {
   return [...str].length
 }
+// 字符串复制
+export const copyLink = function (e){
+  // if(!e) {
+  //   return this.$Message.error('链接地址为空')
+  // }
+  var input = document.createElement("input")   // js创建一个input输入框
+  input.value = e  // 将需要复制的文本赋值到创建的input输入框中
+  document.body.appendChild(input)    // 将输入框暂时创建到实例里面
+  input.select()   // 选中输入框中的内容
+  document.execCommand("Copy")   // 执行复制操作
+  document.body.removeChild(input) // 最后删除实例中临时创建的input输入框，完成复制操作
+  // return this.$Message.success('复制成功')
+}
 /*
 **************数组操作********************
 */
@@ -169,6 +182,14 @@ export const url2JSON = function (url = '') {
     const [key, val] = item.split('=')
     return { ...prev, [key]: val }
   }, {})
+}
+/**
+* 数组去重
+* 举例： noSame([1,2,3,4,'1'])
+*/
+export const noSame = function(arr) {
+  const newData = arr.reduce((prev, item) => (prev.set(item, item), prev), new Map())
+  return [...newData.keys()]
 }
 //base64数据导出文件，文件下载
 /**
