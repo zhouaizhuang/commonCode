@@ -51,7 +51,7 @@
 /* 字体大小 */
 .fs0{font-size:0;} .fs12r{font-size:12rpx;} .fs14r{font-size:14rpx;} .fs16r{font-size:16rpx;} .fs18r{font-size:18rpx;}
 .fs20r{font-size:20rpx;} .fs22r{font-size:22rpx;} .fs24r{font-size:24rpx;} .fs26r{font-size:26rpx;} .fs28r{font-size:28rpx;}
-.fs30r{font-size:30rpx;} .fs32r{font-size:32rpx;}
+.fs30r{font-size:30rpx;} .fs32r{font-size:32rpx;} .fs34r{font-size:34rpx;} .fs36r{font-size:36rpx;} .fs38r{font-size:38rpx;} .fs40r{font-size:40rpx;}
 /*字体粗细 浏览器支持不了全部*/
 .fw1{font-weight:100;} .fw2{font-weight:200;}  .fw3{font-weight:300;}  .fw4{font-weight:400;} .fw5{font-weight:500;} .fw6{font-weight:600;}  .fw7{font-weight:700;}  .fw8{font-weight:800;}  .fw9{font-weight:900;}
 /* 加粗、倾斜 */
@@ -71,21 +71,32 @@
 .op0{opacity: 0;}  .op1{opacity: 0.1;}  .op2{opacity: 0.2;}  .op3{opacity: 0.3;}  .op4{opacity: 0.4;} .op5{opacity: 0.5;}.op6{opacity: 0.6;} .op7{opacity: 0.7;}  .op8{opacity: 0.8;}  .op9{opacity: 0.9;}  .op10{opacity: 1;} 
 /* 定位 */
 .fixed{position: fixed;} .rel{position:relative;} .abs{position:absolute;}
-.zx-1{z-index:-1;} .zx10{z-index:10;} .zx20{z-index:20;} .zx30{z-index:30;}  .zx40{z-index:40;} .zx50{z-index:50;} .zx60{z-index:60;} .zx70{z-index:70;}  .zx80{z-index:80;} .zx90{z-index:90;} .zx100{z-index:100;} .zx1000{z-index:1000;} 
+.zx-1{z-index:-1;}
+.zx10{z-index:10;} .zx11{z-index:11;} .zx12{z-index:12;} .zx13{z-index:13;}
+.zx20{z-index:20;} .zx21{z-index:21;} .zx22{z-index:22;} .zx23{z-index:23;}
+.zx30{z-index:30;} .zx31{z-index:31;} .zx32{z-index:32;} .zx33{z-index:33;}
+.zx40{z-index:40;} .zx41{z-index:41;} .zx42{z-index:42;} .zx43{z-index:20;}
+.zx50{z-index:50;} .zx60{z-index:60;} .zx70{z-index:70;}  .zx80{z-index:80;} .zx90{z-index:90;} .zx100{z-index:100;} .zx1000{z-index:1000;}
 .trbl0{top:0;right:0;bottom:0;left:0;}
-.t0{top:0;}    .t1r{top:1rpx;}    .t2r{top:2rpx;}    .t5r{top:5rpx;}    .t10r{top:10rpx;}    .t15r{top:15rpx;}    .t20r{top:20rpx;}    .t30r{top:30rpx;}
-.r0{right:0;}  .r1r{right:1rpx;}  .r2r{right:2rpx;}  .r5r{right:5rpx;}  .r10r{right:10rpx;}  .r15r{right:15rpx;}  .r20r{right:20rpx;}  .r30r{right:30rpx;}
-.b0{bottom:0;} .b1r{bottom:1rpx;} .b2r{bottom:2rpx;} .b5r{bottom:5rpx;} .b10r{bottom:10rpx;} .b15r{bottom:15rpx;} .b20r{bottom:20rpx;} .b30r{bottom:30rpx;}
-.l0{left:0;}   .l1r{left:1rpx;}   .l2r{left:2rpx;}   .l5r{left:5rpx;}   .l10r{left:10rpx;}   .l15r{left:15rpx;}   .l20r{left:20rpx;}   .l30r{left:30rpx;}
+.t0{top:0;} .t1r{top:0.01rpx;} .t2r{top:0.02rpx;} .t3r{top:0.03rpx;} .t4r{top:0.04rpx;} .t5r{top:0.05rpx;} .t6r{top:0.06rpx;} .t7r{top:0.07rpx;} .t8r{top:0.08rpx;} .t9r{top:0.09rpx;} .t10r{top:0.1rpx;} .t11r{top:0.11rpx;} .t12r{top:0.12rpx;} .t13r{top:0.13rpx;} .t14r{top:0.14rpx;} .t15r{top:0.15rpx;} .t16r{top:0.16rpx;} .t17r{top:0.17rpx;} .t18r{top:0.18rpx;} .t19r{top:0.19rpx;} .t20r{top:0.2rpx;} .t21r{top:0.21rpx;} .t22r{top:0.22rpx;} .t23r{top:0.23rpx;} .t24r{top:0.24rpx;} .t25r{top:0.25rpx;} .t26r{top:0.26rpx;} .t27r{top:0.27rpx;} .t28r{top:0.28rpx;} .t29r{top:0.29rpx;} .t30r{top:0.3rpx;}
+.r0{right:0;} .r1r{right:0.01rpx;} .r2r{right:0.02rpx;} .r3r{right:0.03rpx;} .r4r{right:0.04rpx;} .r5r{right:0.05rpx;} .r6r{right:0.06rpx;} .r7r{right:0.07rpx;} .r8r{right:0.08rpx;} .r9r{right:0.09rpx;} .r10r{right:0.1rpx;} .r11r{right:0.11rpx;} .r12r{right:0.12rpx;} .r13r{right:0.13rpx;} .r14r{right:0.14rpx;} .r15r{right:0.15rpx;} .r16r{right:0.16rpx;} .r17r{right:0.17rpx;} .r18r{right:0.18rpx;} .r19r{right:0.19rpx;} .r20r{right:0.2rpx;} .r21r{right:0.21rpx;} .r22r{right:0.22rpx;} .r23r{right:0.23rpx;} .r24r{right:0.24rpx;} .r25r{right:0.25rpx;} .r26r{right:0.26rpx;} .r27r{right:0.27rpx;} .r28r{right:0.28rpx;} .r29r{right:0.29rpx;} .r30r{right:0.3rpx;}
+.b0{bottom:0;} .b1r{bottom:0.01rpx;} .b2r{bottom:0.02rpx;} .b3r{bottom:0.03rpx;} .b4r{bottom:0.04rpx;} .b5r{bottom:0.05rpx;} .b6r{bottom:0.06rpx;} .b7r{bottom:0.07rpx;} .b8r{bottom:0.08rpx;} .b9r{bottom:0.09rpx;} .b10r{bottom:0.1rpx;} .b11r{bottom:0.11rpx;} .b12r{bottom:0.12rpx;} .b13r{bottom:0.13rpx;} .b14r{bottom:0.14rpx;} .b15r{bottom:0.15rpx;} .b16r{bottom:0.16rpx;} .b17r{bottom:0.17rpx;} .b18r{bottom:0.18rpx;} .b19r{bottom:0.19rpx;} .b20r{bottom:0.2rpx;} .b21r{bottom:0.21rpx;} .b22r{bottom:0.22rpx;} .b23r{bottom:0.23rpx;} .b24r{bottom:0.24rpx;} .b25r{bottom:0.25rpx;} .b26r{bottom:0.26rpx;} .b27r{bottom:0.27rpx;} .b28r{bottom:0.28rpx;} .b29r{bottom:0.29rpx;} .b30r{bottom:0.3rpx;}
+.l0{left:0;} .l1r{left:0.01rpx;} .l2r{left:0.02rpx;} .l3r{left:0.03rpx;} .l4r{left:0.04rpx;} .l5r{left:0.05rpx;} .l6r{left:0.06rpx;} .l7r{left:0.07rpx;} .l8r{left:0.08rpx;} .l9r{left:0.09rpx;} .l10r{left:0.1rpx;} .l11r{left:0.11rpx;} .l12r{left:0.12rpx;} .l13r{left:0.13rpx;} .l14r{left:0.14rpx;} .l15r{left:0.15rpx;} .l16r{left:0.16rpx;} .l17r{left:0.17rpx;} .l18r{left:0.18rpx;} .l19r{left:0.19rpx;} .l20r{left:0.2rpx;} .l21r{left:0.21rpx;} .l22r{left:0.22rpx;} .l23r{left:0.23rpx;} .l24r{left:0.24rpx;} .l25r{left:0.25rpx;} .l26r{left:0.26rpx;} .l27r{left:0.27rpx;} .l28r{left:0.28rpx;} .l29r{left:0.29rpx;} .l30r{left:0.3rpx;}
+/*百分比定位*/
+.t10{top:10%;} .t15{top:15%;} .t20{top:20%;} .t25{top:25%;} .t30{top:30%;} .t35{top:35%;} .t40{top:40%;} .t45{top:45%;} .t50{top:50%;}
+.r10{right:10%;} .r15{right:15%;} .r20{right:20%;} .r25{right:25%;} .r30{right:30%;} .r35{right:35%;} .r40{right:40%;} .r45{right:45%;} .r50{right:50%;}
+.b10{bottom:10%;} .b15{bottom:15%;} .b20{bottom:20%;} .b25{bottom:25%;} .b30{bottom:30%;} .b35{bottom:35%;} .b40{bottom:40%;} .b45{bottom:45%;} .b50{bottom:50%;}
+.l10{left:10%;} .l15{left:15%;} .l20{left:20%;} .l25{left:25%;} .l30{left:30%;} .l35{left:35%;} .l40{left:40%;} .l45{left:45%;} .l50{left:50%;}
 /* cursor鼠标显示 */
 .poi{cursor:pointer;}    .def{cursor:default;}
 /* 左右居中 */
 .auto{margin: 0 auto;}
 /* 动画 */
 .trans3{-webkit-transition:all 0.3s; transition:all 0.3s;}
-.ts1-5{transform:scale(1.5);}
+.ts0-5{transform:scale(0.5);} .ts0-6{transform:scale(0.6);} .ts0-7{transform:scale(0.7);} .ts0-8{transform:scale(0.8);} .ts0-9{transform:scale(0.9);} .ts1-1{transform:scale(1.1);} .ts1-2{transform:scale(1.2);} .ts1-3{transform:scale(1.3);} .ts1-4{transform:scale(1.4);} .ts1-5{transform:scale(1.5);} .ts1-6{transform:scale(1.6);} .ts1-7{transform:scale(1.7);} .ts1-8{transform:scale(1.8);} .ts1-9{transform:scale(1.9);} .ts2-0{transform:scale(2);}
 .tx-50{transform:translateX(-50%);}
 .ty-50{transform: translateY(-50%);}
+.txy-50{transform: translate(-50%, -50%);}
 /* 按钮禁用 */
 .disable{opacity:0.5; pointer-events:none;}
 .disable:hover{cursor:no-drop;}
