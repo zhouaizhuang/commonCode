@@ -1,4 +1,4 @@
-<!--此组件仅仅是参考代码-->
+<!--！！！！！这仅仅是参考代码，没有封装好-->
 <template>
   <div class="f gf">
     <div class="f1 f ac fs26r">
