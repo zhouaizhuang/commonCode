@@ -320,6 +320,32 @@ export const getProps = function (obj, props) {
     return obj
   }
 }
+// 数组分块
+// 举例子： chunk([1,2,3,4,5], 2) ====>   [[1,2], [3, 4], 5]
+export const chunk = function (arr, size = 0) {
+  if(!isArray(arr)) {throw new Error('arr必须是数组类型')}
+  size = Number(size)
+  if(!isGt0(size)) {throw new Error('size必须为大于0的整数')}
+  var targetArr = []
+  for(var i = 0; i < arr.length; i += size) {
+    targetArr.push(arr.slice(i, i + size));
+  }
+  return targetArr
+}
+// 数组（a 相对于 b 的）交集
+// 举例子: difference([1,2,3], [1,2]) ====> [1, 2]
+export const intersect = function (arr1, arr2){
+  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  const tmp = new Set(arr2)
+  return arr1.filter(x => tmp.has(x))
+}
+// 数组（a 相对于 b 的）差集
+// 举例子: difference([1,2,3], [1,2]) ====> [3]
+export const difference = function (arr1, arr2){
+  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  const b = new Set(arr2)
+  return arr1.filter(x => !b.has(x))
+}
 // 保证json格式数据的可靠获取。
 // 举例子：const obj = { area: { city: null, cityName:'北京' }, areaName: '中国' }
 // safeGet(() => obj.area.city.town, '') ---> ''
