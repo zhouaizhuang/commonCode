@@ -29,6 +29,7 @@ export const guID = function () {
 }
 // 函数防抖
 export const debounce = function (fn, wait=3e3) {
+  if(!isFunction(fn)){throw new Error('传入的参数必须是个函数')}
   let timeout = null  // 使用闭包，让每次调用时点击定时器状态不丢失
   return function () { 
     clearTimeout(timeout) // 如果用户在定时器（上一次操作）执行前再次点击，那么上一次操作将被取消
@@ -83,6 +84,7 @@ export const getPosition = function (e) {
 /**洗牌算法**/
 // [1,2,3,4,5,6].sort(() => .5 - Math.random()) // 基础版本
 export const shuffle = function (arr){
+  if(!isArray(arr)) { arr = [arr] }
   let n = arr.length, random
   while(0!=n){
     random =  (Math.random() * n--) >>> 0; // 无符号右移位运算符向下取整
@@ -215,7 +217,7 @@ export const downloadFile = function (filename, data){
     document.body.removeChild(DownloadLink)
   }
 }
-
+// 打开全屏
 export const toFullScreen = function (){
   let el = document.documentElement;
   let rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
@@ -343,8 +345,8 @@ export const safeGet = function (run, defaultVal = '') {
   * sep：千分位符号
   * 
   * 举例：formatMoney(12322.1223, 'float') ----- > "￥12,322.12"
-  * 举例：formatMoney(12322.1223, 'float', '', 1) ------> "12,322.1"
-  * 举例：formatMoney(12322, 'intFloat') ------> "12322"
+  * 举例：formatMoney(12322.1223, 'float', '', 1) ------> "12,322.1"  固定显示1位小数
+  * 举例：formatMoney(12322, 'intFloat') ------> "12322"  当没有小数点就显示整数，否则显示整数
 */
 export const formatMoney = function (num = 0, type = 'float', prev = '￥', prec = 2, dec = '.', sep = ',') {
   num = String(num).replace(/[^0-9+-Ee.]/g, '') || '0'
