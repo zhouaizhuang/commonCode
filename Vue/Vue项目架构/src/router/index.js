@@ -13,13 +13,13 @@ r.keys().forEach(item => {
 const routes = [  
   {
     path: '/',
-    name: 'Home',
-    component:  () => import('@/views/Home.vue')
+    name: 'home',
+    component:  () => import('@/views/home.vue')
   },
   {
     path: '/login',
-    name: 'Login',
-    component:  () => import('@/views/Login.vue')
+    name: 'login',
+    component:  () => import('@/views/login.vue')
   },
   ...routerList,
 ]
