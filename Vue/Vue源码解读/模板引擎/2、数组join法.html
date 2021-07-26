@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <ul id="list"></ul>
+  
+
+<script>
+  var arr = [
+    { "name": "小明", "age": 12, "sex": "男" },
+    { "name": "小红", "age": 12, "sex": "女" },
+    { "name": "小强", "age": 13, "sex": "男" },
+  ]
+  arr.reduce((prev, item) => {
+    prev.innerHTML += [
+      '<li>',
+      '  <p>'+ item.name +'</p>',
+      '</li>',
+    ].join('')
+    return prev
+  }, document.getElementById('list'))
+</script>
+</body>
+</html>
