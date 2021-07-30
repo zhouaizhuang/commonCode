@@ -14,6 +14,23 @@ export const isDate = isType('Date')
 export const isError = isType('Error')
 export const isGt0 = val => /^\+?[1-9][0-9]*$/.test(val) // 是否是大于0的整数
 export const isGtEq0 = val => /^\+?[1-9][0-9]*$/.test(val) || String(val) === '0' // 是否是大于等于0的整数
+//是否是微信
+export const is_weixin = function () {
+  var ua = navigator.userAgent.toLowerCase()
+  return ua.match(/MicroMessenger/i) == "micromessenger"
+}
+//是否是iphoneX
+export function is_iphoneX () {
+  // window.screen.height为屏幕高度
+  // window.screen.availHeight 为浏览器 可用高度
+  const rate = window.screen.height / window.screen.width;
+  let limit = window.screen.height == window.screen.availHeight ? 1.8 : 1.65; // 临界判断值  
+  return rate > limit;
+}
+//是否是iphone
+export function is_iphone () {
+  return /iphone/gi.test(navigator.userAgent);
+}
 // 深拷贝
 export const deepCopy = function (obj) {
   if(!(isArray(obj) || isObject(obj))) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
