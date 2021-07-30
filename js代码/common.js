@@ -60,6 +60,20 @@ export const isPhoneNum = function(str) {
 export const getScrollTop = function() {
   return (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
 }
+// 滚动的盒子到某个位置
+// scrollPos('taskBox', 0) // 将id为taskBox的盒子滚动到这个盒子的顶部
+export const scrollPos = function (id = '', pos = 0){
+  document.getElementById(id).scrollTop = pos
+}
+// 获取cookie 示例：var og_third_app_token = og_getOgCookie('third_app_token')
+export const getCookie = function (name) {
+  var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
+  if (arr = document.cookie.match(reg)) {
+    return unescape(arr[2])
+  } else {
+    return null
+  }
+}
 // 获取操作系统类型
 export const getOS = function() {
   const userAgent = 'navigator' in window && 'userAgent' in navigator && navigator.userAgent.toLowerCase() || ''
