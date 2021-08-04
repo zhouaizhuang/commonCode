@@ -14,23 +14,16 @@ export const isDate = isType('Date')
 export const isError = isType('Error')
 export const isGt0 = val => /^\+?[1-9][0-9]*$/.test(val) // 是否是大于0的整数
 export const isGtEq0 = val => /^\+?[1-9][0-9]*$/.test(val) || String(val) === '0' // 是否是大于等于0的整数
-//是否是微信
-export const is_weixin = function () {
-  var ua = navigator.userAgent.toLowerCase()
-  return ua.match(/MicroMessenger/i) == "micromessenger"
-}
-//是否是iphoneX
-export function is_iphoneX () {
-  // window.screen.height为屏幕高度
-  // window.screen.availHeight 为浏览器 可用高度
-  const rate = window.screen.height / window.screen.width;
-  let limit = window.screen.height == window.screen.availHeight ? 1.8 : 1.65; // 临界判断值  
-  return rate > limit;
-}
-//是否是iphone
-export function is_iphone () {
-  return /iphone/gi.test(navigator.userAgent);
-}
+export const isIE = UA && /msie|trident/.test(UA) // 是否是大于等于0的整数
+export const isIE9 = UA && UA.indexOf('msie 9.0') > 0 // 是否是IE9
+export const isEdge = UA && UA.indexOf('edge/') > 0 // 是否是edge
+export const isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android') // 是否是安卓系统
+export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios') // 是否是ios系统
+export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge //
+export const isIphoneX = (window.screen.height / window.screen.width)  > (window.screen.height == window.screen.availHeight ? 1.8 : 1.65) // 是否是iphoneX
+export const isIphone = /iphone/gi.test(navigator.userAgent) // 是否是iphone
+export const isWeiXin = navigator.userAgent.toLowerCase().match(/MicroMessenger/i) == "micromessenger" //是否是微信
+export const isPhoneNum = /^1[3456789]\d{9}$/.test(str) // 检测是否是手机号码
 // 深拷贝
 export const deepCopy = function (obj) {
   if(!(isArray(obj) || isObject(obj))) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
@@ -67,11 +60,6 @@ export const throttling = function  (fn, wait=3e3) {
       timeout = setTimeout(() => fn(...arguments), wait) // 后续点击没有到达设置的延时，定时器设定延时进行调用
     }
   }
-}
-// 检测是否是手机号码
-export const isPhoneNum = function(str) {
-  // return /^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/.test(str)
-  return /^1[3456789]\d{9}$/.test(str)
 }
 // 获取当前滚动距离顶部的距离
 export const getScrollTop = function() {
