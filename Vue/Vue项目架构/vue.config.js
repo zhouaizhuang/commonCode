@@ -24,7 +24,7 @@ module.exports = {
     extract: true, // 是否分离css（插件ExtractTextPlugin）
     sourceMap: false, // 是否开启 CSS source maps 
     loaderOptions: {}, // css预设器配置项   
-    modules: false, // 是否启用 CSS modules for all css / pre-processor files.
+    requireModuleExtension: false, // 是否启用 CSS modules for all css / pre-processor files.
   },
   parallel: require('os').cpus().length > 1, // 是否使用 thread-loader
   pwa: {}, // PWA 插件相关配置
