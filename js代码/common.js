@@ -24,6 +24,26 @@ export const isIphoneX = (window.screen.height / window.screen.width)  > (window
 export const isIphone = /iphone/gi.test(navigator.userAgent) // 是否是iphone
 export const isWeiXin = navigator.userAgent.toLowerCase().match(/MicroMessenger/i) == "micromessenger" //是否是微信
 export const isPhoneNum = /^1[3456789]\d{9}$/.test(str) // 检测是否是手机号码
+// 异步加载js
+// 举例子：await loadJs("//res.wx.qq.com/open/js/jweixin-1.6.0.js");
+export const loadJs = async function(url) {
+  let loadedJs = []
+  return new Promise((resolve, reject) => {
+    if (loadedJs.includes(url)) { resolve() }
+    let script = document.createElement("script")
+    script.type = "text/javascript"
+    script.src = url
+    script.onload = function () { loadedJs.push(url); resolve() }
+    script.onerror = function () { reject() }
+    document.head.appendChild(script)
+  })
+}
+// 执行此函数，或导致函数执行阻塞在此处t毫秒。 使用场景，H5在app中运行的时候，可能app环境并没有完全加载好久执行了app提供的接口，会导致失败
+// 如果检测到环境没好，延时个500ms那么再继续执行程序就可靠很多
+// 举例子: await request.wait(500);   那么程序会在此处阻塞等待500ms
+export const wait = async function(t) {
+  return new Promise(resolve => setTimeout(() => resolve(), t))
+}
 // 深拷贝
 export const deepCopy = function (obj) {
   if(!(isArray(obj) || isObject(obj))) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
@@ -82,6 +102,9 @@ export const getCookie = function (name) {
     return null
   }
 }
+// 本地存储
+export const getLocalStorage = name => JSON.parse(localStorage.getItem(name))
+export const setLocalStorage = (name, val) => localStorage.setItem(name, JSON.stringify(val))
 // 获取操作系统类型
 export const getOS = function() {
   const userAgent = 'navigator' in window && 'userAgent' in navigator && navigator.userAgent.toLowerCase() || ''
@@ -445,6 +468,9 @@ export const getDay = function (date) {
 // 举例： socketTime('2020-03-05') ---> 返回的就是2020年3月5日的年月日数据
 // socketTime() // 默认返回当天数据
 export const socketTime = function (date = new Date()) {
+  if(!isDate(date)) {
+    date = date.replace(/[-]/g, "/")
+  }
   const dt = new Date(date)
   const year = String(dt.getFullYear())
   const _month = String(dt.getMonth() + 1)
