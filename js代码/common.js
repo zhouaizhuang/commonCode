@@ -186,6 +186,16 @@ export const copyLink = function (e){
 /*
 **************数组操作********************
 */
+// 生成重复数组
+// 举例： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
+export const repeat = function(arr = '', times = 1) {
+  let res = []
+  for(let i =0; i < range(times, 1); i++) {
+    const tmp = deepCopy(arr).map(v => ({...v, _id: guID()}))
+    res = [...res, ...tmp]
+  }
+  return res
+}
 // 按照某个字段进行排序。
 // 举例：sortByProp([{name:'ss', age:30}, {name:'dd', age:14}], 'age') ----> [{name:'dd', age:14}, {name:'ss', age:30}]
 // increase不传默认升序， 传false降序
