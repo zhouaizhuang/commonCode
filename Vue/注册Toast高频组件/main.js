@@ -3,9 +3,9 @@
 // import App from "./App";
 
 
-import plus from "./plus";
+import register from "./component/hot/register";
 //使用自定义插件
-Vue.use(plus)
+Vue.use(register)
 
 
 
