@@ -152,6 +152,91 @@ export const cached = function (fn) {
     return !cache[str] && (cache[str] = fn(str)), cache[str]
   }
 }
+// 扩展对象
+// extend({}, {name:1}) ====> {name: 1}
+export const extend = function(to, _from) {
+  for (var key in _from) {
+    to[key] = _from[key]
+  }
+  return to
+}
+// 对象数组转对象
+// toObject([{name: 1}, {age:2}]) ====> {name:1, age:2}
+export const toObject = function (arr) {
+  var res = {}
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i]) {
+      extend(res, arr[i])
+    }
+  }
+  return res
+}
+// 检测是否大致相等
+// looseEqual(1,'1') ===> true
+// looseEqual({name:'zaz'},{'name':'zaz'}) ===> true
+function looseEqual (a, b) {
+  if (a === b) { return true }
+  var isObjectA = isObject(a)
+  var isObjectB = isObject(b)
+  if (isObjectA && isObjectB) {
+    try {
+      var isArrayA = isArray(a)
+      var isArrayB = isArray(b)
+      if (isArrayA && isArrayB) {
+        return a.length === b.length && a.every(function (e, i) {
+          return looseEqual(e, b[i])
+        })
+      } else if (a instanceof Date && b instanceof Date) {
+        return a.getTime() === b.getTime()
+      } else if (!isArrayA && !isArrayB) {
+        var keysA = Object.keys(a)
+        var keysB = Object.keys(b)
+        return keysA.length === keysB.length && keysA.every(function (key) {
+          return looseEqual(a[key], b[key])
+        })
+      } else {
+        return false
+      }
+    } catch (e) {
+      return false
+    }
+  } else if (!isObjectA && !isObjectB) {
+    return String(a) === String(b)
+  } else {
+    return false
+  }
+}
+// 获取进近似相等的val值，在数组arr中的位置。没找到相似的返回-1
+// looseIndexOf([{name:'zaz'}], {name:'zaz', age:'12'})  ===> 0
+export const looseIndexOf = function (arr, val) {
+  for (var i = 0; i < arr.length; i++) {
+    if (looseEqual(arr[i], val)) { return i }
+  }
+  return -1
+}
+// 一次性函数。只执行一次。后面再调用,没有任何函数内代码执行
+// 示例：const aa = once(function (a, b){console.log(a + b)})
+// aa(1,2) ===> 3   ------>  aa(3, 4) ===> undefined
+export const once = function(fn) {
+  var called = false
+  return function () {
+    if (!called) {
+      called = true;
+      fn.apply(this, arguments);
+    }
+  }
+}
+// 生成一个映射函数，生成一个判断函数，用于判断
+// const isMyStudent = makeMap('小明,小王') // 柯里化生成不同的判断函数
+// isMyStudent('张三')   ===>  false
+export const makeMap = function(str,expectsLowerCase = false) {
+  var map = Object.create(null)
+  var list = isString(str) ? str.split(',') : str
+  for (var i = 0; i < list.length; i++) {
+    map[list[i]] = true
+  }
+  return expectsLowerCase ? function (val) { return map[val.toLowerCase()]; } : function (val) { return map[val]; }
+}
 /*
 **************字符串操作********************
 */
@@ -190,9 +275,18 @@ export const copyLink = function (e){
 /*
 **************数组操作********************
 */
-// 生成重复数组
+// 删除数组中某个元素
+// const arr = ['a', 'b', 'c']
+// remove(arr, 'b') ====> arr变更为['a', 'c']
+export const remove = function(arr, item) {
+  if (arr.length) {
+    var index = arr.indexOf(item);
+    if (index > -1) { return arr.splice(index, 1) }
+  }
+}
+// 数组元素复制N次
 // 举例： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
-export const repeat = function(arr = '', times = 1) {
+export const repeat = function(arr = [], times = 1) {
   let res = []
   for(let i =0; i < range(times, 1); i++) {
     const tmp = deepCopy(arr).map(v => ({...v, _id: guID()}))
