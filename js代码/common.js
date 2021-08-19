@@ -207,7 +207,7 @@ function looseEqual (a, b) {
   }
 }
 // 获取进近似相等的val值，在数组arr中的位置。没找到相似的返回-1
-// looseIndexOf([{name:'zaz'}], {name:'zaz', age:'12'})  ===> 0
+// looseIndexOf([{name:'zaz'}], {name:'zaz'})  ===> 0
 export const looseIndexOf = function (arr, val) {
   for (var i = 0; i < arr.length; i++) {
     if (looseEqual(arr[i], val)) { return i }
