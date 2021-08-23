@@ -335,7 +335,7 @@ export const url2JSON = function (url = '') {
   const paramsStr = url.includes('?') ? (url.split('?')[1] || '') : url
   return paramsStr.split('&').reduce((prev, item) => {
     const [key, val] = item.split('=')
-    return { ...prev, [key]: val }
+    return { ...prev, [key]: decodeURIComponent(val) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
   }, {})
 }
 /**
