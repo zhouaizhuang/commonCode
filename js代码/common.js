@@ -615,3 +615,34 @@ export const afterNsecond = function (after = 60) {
   const dt = new Date()
   return new Date(dt.getTime() + after * 1000)
 }
+
+
+/**
+ * 轻提示
+ * @param str 提示的字符串内容
+ * @param time 提示显示的时间
+ * @param innerHTML 采用传入的html，不使用默认的样式
+ * @举例 showToast('请输入手机号码')  // 弹出“请输入手机号码”这个提示，并且1500ms后自动消失
+ */
+export const showToast = function (str, time = 1500, innerHTML = '') {
+  var pObj = document.createElement("div") // 创建，写内容
+  pObj.innerHTML = innerHTML || `<div style="position:fixed;top:45%;left:50%;transform: translateX(-50%);font-size:0.30rem;padding:0.2rem 0.5rem;background:#555;color:#fff;border-radius:0.15rem;">${str}</div>`       //添加内容
+  document.body.appendChild(pObj)
+  setTimeout(() => document.body.removeChild(pObj), time);
+}
+/**
+ * 设置标题
+ * @param title 网页标题
+ * @举例 setTitle('订餐管理系统')  // 设置首页标题为“订餐管理系统”
+ */
+export const setTitle = function  (title) {
+  document.title = title
+}
+/**
+ * 轻提示
+ * @param href 链接地址
+ * @举例 goUrl('https://www.baidu.com')  // 跳转到百度
+ */
+export const goUrl = function(href) {
+  window.location.href = href
+}
