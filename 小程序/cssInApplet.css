@@ -96,4 +96,4 @@
 /* 边框圆角 */
 .rds1r{border-radius:1rpx;}   .rds2r{border-radius:2rpx;}  .rds5r{border-radius:5rpx;}    .rds10r{border-radius:10rpx;}  .rds15r{border-radius:15rpx;}  .rds20r{border-radius:20rpx;}  .rds30r{border-radius:30rpx;}  .rds50{border-radius:50%;}
 /* 表单必填*号 */
-.require::after{ content: '*'; color: #FF6F4A; font-size: 16rpx; margin-left: 12rpx;}
+.require::before{ content: '*';display: inline-block;margin-right: 4rpx;line-height: 1;font-family: SimSun;font-size: 14rpx;color: #ed4014}
