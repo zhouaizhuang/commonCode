@@ -323,7 +323,7 @@ export const JSON2url = function (url = '', params = {}){
   params = formatJSON(params)
   return Object.keys(params).reduce((prev, item, index) => {
     prev += prev.includes('?') ? '&' : '?'
-    prev += `${item}=${params[item]}`
+    prev += `${item}=${encodeURIComponent(params[item])}`
     return prev
   }, url) || ''
 }
