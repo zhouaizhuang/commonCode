@@ -1,3 +1,4 @@
+<!--备注：这是参考代码。不可以直接使用，需要进行一定的修改-->
 <!-- 使用方法
 具体不同的公司需要使用不同的配置
 import UpLoadImg from "./UpLoadImg.vue"
@@ -47,9 +48,7 @@ components: {
   </div>
 </template>
 <script>
-import { getQnToken } from '@/api/data'
-import Cookies from 'js-cookie'
-import { safeGet, guID } from "@/common.js"
+import { safeGet, guID, setLocalStorage, getLocalStorage } from "@/common.js"
 export default {
   props: {
     imgArr: {type: Array, default: function(){ return [] } },
@@ -75,12 +74,11 @@ export default {
   },
   methods: {
     // 获取图片上传的token
-    getTokenInfo() {  
-      getQnToken().then(res => {
-        if(res.code != 0) { return this.$Message.error(res.text) }
-        Cookies.set('tokenInfo', res.upload_token, { expires: 1 / 24 })
-        this.uploadData = { token: res.upload_token, scene: this.scene, type: this.fileType }
-      })
+    async getTokenInfo() {  
+      const { code, data, text } = await axios.request({ url: '/lib/qiniu/get-token', method: 'POST' })
+      if(code) { return this.$Message.error(text) }
+      setLocalStorage('tokenInfo', data.upload_token)
+      this.uploadData = { token: res.upload_token, scene: this.scene, type: this.fileType }
     },
     handleBeforeUpload(event, file, fileList) {
       if (this.limit > 0 && this.imgList.length >= this.limit) {
@@ -92,7 +90,7 @@ export default {
         return false
       }
       if (!this.uploadData.token) {
-        let token = Cookies.get('tokenInfo')
+        let token = getLocalStorage('tokenInfo')
         if (!token) {
           this.getTokenInfo()
         } else {
