@@ -284,13 +284,20 @@ export const remove = function(arr, item) {
     if (index > -1) { return arr.splice(index, 1) }
   }
 }
-// 数组元素复制N次
-// 举例： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
-export const repeat = function(arr = [], times = 1) {
-  let res = []
-  for(let i =0; i < range(times, 1); i++) {
-    const tmp = deepCopy(arr).map(v => ({...v, _id: guID()}))
-    res = [...res, ...tmp]
+// 数组、字符串元素复制N次 
+// 举例(重复生成数组元素)： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
+// 举例（重复生成字符串）： repeat('abc', 2) ====>  'abcabc'
+export const repeat = function(obj = '', times = 1) {
+  let res = isArray(obj) ? [] : ''
+  if(isArray(obj)) {
+    for(let i =0; i < range(times, 1); i++) {
+      const tmp = deepCopy(obj).map(v => ({...v, _id: guID()}))
+      res = [...res, ...tmp]
+    }
+  } else {
+    for(let j = 0; j < range(times, 1); j++){
+      res += obj
+    }
   }
   return res
 }
@@ -629,6 +636,54 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
   pObj.innerHTML = innerHTML || `<div style="position:fixed;top:45%;left:50%;transform: translateX(-50%);font-size:0.30rem;padding:0.2rem 0.5rem;background:#555;color:#fff;border-radius:0.15rem;">${str}</div>`       //添加内容
   document.body.appendChild(pObj)
   setTimeout(() => document.body.removeChild(pObj), time);
+}
+/**
+ * 开启loading
+ * @param str 提示的字符串内容
+ * @param dom 可以手动传入需要加载的dom结构
+ * @param style 可以手动传入需要加载的样式
+ * @举例 showLoading()  // 显示出loading转圈圈动画
+ */
+export const showLoading = function(str='加载中...', dom = '', style = '') {
+  var divObj = document.createElement("div") // 创建，写内容
+  divObj.setAttribute("id","z-loading");
+  divObj.innerHTML = dom || `
+  <div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;">
+    <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center">
+      <svg style="width:60px;height:60px;animation: rotate360 2s linear infinite;">
+        <circle cx="30" cy="30" r="20" fill="none" style="color:#1989FA;animation: loading-dash 1.5s ease-in-out infinite;stroke-dasharray: 90 120;stroke-dashoffset: 0;stroke-width: 2;stroke:#1989FA;stroke-linecap: round;"></circle>
+      </svg>
+      <div style="color:#0094FF;text-align:center;font-size:14px;">${str}</div>
+    </div>
+  </div>`
+  var styleObj = document.createElement('style')
+  styleObj.id = 'z-style-id'
+  styleObj.innerHTML= style || `
+    @keyframes rotate360 {
+      0% {transform: rotate(0);}
+      100% {transform: rotate(360deg);}
+    }
+    @keyframes loading-dash {
+      0% { stroke-dasharray: 1 200; stroke-dashoffset: 0; }
+      50% { stroke-dasharray: 90 150; stroke-dashoffset: -40px; }
+      100% { stroke-dasharray: 90 150; stroke-dashoffset: -120px; }
+    }`
+  if(!document.getElementById('z-style-id')) {
+    document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
+  }
+  if(!document.getElementById("z-loading")) {
+    document.body.appendChild(divObj) // 添加Dom节点到body中
+  }
+  document.getElementById("z-loading").style.display = 'block'
+}
+/**
+ * 关闭loading
+ * @举例 showLoading()  // 关闭loading转圈圈动画（将DOM和样式移除了）
+ */
+export const hideLoading = function(){
+  // document.body.removeChild(document.getElementById("z-loading")) // 清除DOM
+  // document.getElementsByTagName('head').item(0).removeChild(document.getElementById('z-style-id')) // 清除样式
+  document.getElementById("z-loading").style.display = 'none'
 }
 /**
  * 设置标题
