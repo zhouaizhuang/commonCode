@@ -645,18 +645,18 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
  * @举例 showLoading()  // 显示出loading转圈圈动画
  */
 export const showLoading = function(str='加载中...', dom = '', style = '') {
-  var divObj = document.createElement("div") // 创建，写内容
-  divObj.setAttribute("id","z-loading");
+  var divObj = document.createElement("div") // 创建dom
+  divObj.setAttribute("id","z-loading")
   divObj.innerHTML = dom || `
   <div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;">
-    <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center">
+    <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center;">
       <svg style="width:60px;height:60px;animation: rotate360 2s linear infinite;">
         <circle cx="30" cy="30" r="20" fill="none" style="color:#1989FA;animation: loading-dash 1.5s ease-in-out infinite;stroke-dasharray: 90 120;stroke-dashoffset: 0;stroke-width: 2;stroke:#1989FA;stroke-linecap: round;"></circle>
       </svg>
       <div style="color:#0094FF;text-align:center;font-size:14px;">${str}</div>
     </div>
   </div>`
-  var styleObj = document.createElement('style')
+  var styleObj = document.createElement('style') // 创建样式
   styleObj.id = 'z-style-id'
   styleObj.innerHTML= style || `
     @keyframes rotate360 {
