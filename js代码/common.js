@@ -678,12 +678,12 @@ export const showLoading = function(str='加载中...', dom = '', style = '') {
 }
 /**
  * 关闭loading
- * @举例 showLoading()  // 关闭loading转圈圈动画（将DOM和样式移除了）
+ * @举例 hideLoading()  // 关闭loading转圈圈动画（将DOM和样式移除了）
  */
 export const hideLoading = function(){
   // document.body.removeChild(document.getElementById("z-loading")) // 清除DOM
   // document.getElementsByTagName('head').item(0).removeChild(document.getElementById('z-style-id')) // 清除样式
-  document.getElementById("z-loading").style.display = 'none'
+  document.getElementById("z-loading").style.display = 'none' // loading切换可能是频繁的，因此没必要采用上面dom清除操作
 }
 /**
  * 设置标题
