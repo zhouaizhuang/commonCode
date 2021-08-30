@@ -89,9 +89,10 @@ export const guID = function () {
   return Number(Math.random().toString().substr(3, 8) + Date.now()).toString(36)
 }
 function getList(){
-  let currentId = guID()
+  // 假定在vue项目中this指向data中的数据
+  this.currentId = guID()
   request('').then(res => {
-    if(res.currentId === currentId) {
+    if(res.currentId === this.currentId) {
       this.setData({list: res})
     }
   }).catch(console.log)
