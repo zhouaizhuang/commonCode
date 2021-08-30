@@ -26,8 +26,8 @@ export const Validator = function () {
 Validator.prototype.add = function(val, rules) {
   Object.keys(rules).forEach(item => {
     this.cache.push(function (){
-      let [func, ...arg] = item.split(':')
-      arg.push(rules[item])
+      let [func, ...arg] = item.split(':') // 用冒号传入一些限制参数
+      arg.push(rules[item]) // msg作为最后一个参数传入
       return check[func](val, ...arg)
     })
   })
