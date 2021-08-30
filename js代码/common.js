@@ -42,9 +42,8 @@ export const loadJs = async function(url) {
     document.head.appendChild(script)
   })
 }
-// 执行此函数，或导致函数执行阻塞在此处t毫秒。 使用场景，H5在app中运行的时候，可能app环境并没有完全加载好久执行了app提供的接口，会导致失败
-// 如果检测到环境没好，延时个500ms那么再继续执行程序就可靠很多
-// 举例子: await request.wait(500);   那么程序会在此处阻塞等待500ms
+// 执行此函数，或导致函数执行阻塞在此处t毫秒
+// 举例子: await wait(500);   那么程序会在此处阻塞等待500ms
 export const wait = async function(t) {
   return new Promise(resolve => setTimeout(() => resolve(), t))
 }
