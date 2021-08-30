@@ -1,5 +1,7 @@
 /*
-**************公共方法********************
+**********************************************************************************************
+******************************************公共方法*********************************************
+**********************************************************************************************
 */
 export const isType = type => val => type === Object.prototype.toString.call(val).slice(8, -1)
 export const isArray = isType('Array')
@@ -129,6 +131,12 @@ export const getPosition = function (e) {
   }
   return { Left: offsetx, Top: offsety }
 }
+
+/*
+**********************************************************************************************
+******************************************数组方法*********************************************
+**********************************************************************************************
+*/
 /**洗牌算法**/
 // [1,2,3,4,5,6].sort(() => .5 - Math.random()) // 基础版本
 export const shuffle = function (arr){
@@ -236,8 +244,105 @@ export const makeMap = function(str,expectsLowerCase = false) {
   }
   return expectsLowerCase ? function (val) { return map[val.toLowerCase()]; } : function (val) { return map[val]; }
 }
+// 删除数组中某个元素
+// const arr = ['a', 'b', 'c']
+// remove(arr, 'b') ====> arr变更为['a', 'c']
+export const remove = function(arr, item) {
+  if (arr.length) {
+    var index = arr.indexOf(item);
+    if (index > -1) { return arr.splice(index, 1) }
+  }
+}
+// 数组、字符串元素复制N次 
+// 举例(重复生成数组元素)： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
+// 举例（重复生成字符串）： repeat('abc', 2) ====>  'abcabc'
+export const repeat = function(obj = '', times = 1) {
+  let res = isArray(obj) ? [] : ''
+  if(isArray(obj)) {
+    for(let i =0; i < range(times, 1); i++) {
+      const tmp = deepCopy(obj).map(v => ({...v, _id: guID()}))
+      res = [...res, ...tmp]
+    }
+  } else {
+    for(let j = 0; j < range(times, 1); j++){
+      res += obj
+    }
+  }
+  return res
+}
+// 按照某个字段进行排序。
+// 举例：sortByProp([{name:'ss', age:30}, {name:'dd', age:14}], 'age') ----> [{name:'dd', age:14}, {name:'ss', age:30}]
+// increase不传默认升序， 传false降序
+export const sortByProp = function (arr, str, increase = true) {
+  return arr.sort((a, b) => increase ? a[str] - b[str] : b[str] - a[str])
+}
+/**
+* 数组去重
+* 举例： noSame([1,2,3,4,'1'])
+*/
+export const noSame = function(arr) {
+  const newData = arr.reduce((prev, item) => (prev.set(item, item), prev), new Map())
+  return [...newData.keys()]
+}
+//递归解析数组中某个字段最深层该字段数组平铺。举例子：获取数组中每个对象的最深层的child属性
+// const arr = [{ 
+//   name: 'a',
+//   child:[{
+//       name:'b',
+//       child: [ { name:'c' }]
+//   }]
+// }]
+//getAreaFlat(arr, 'child')------> [{name:'c'}]
+export const getAreaFlat = function (arr, props) {
+  if(arr.some(item => isArray(item[props]) && item[props].length)) {
+    arr = arr.reduce((prev, item) => isArray(item[props]) && item[props].length ? [...prev, ...item[props]] : [...prev, item], [])
+    return getAreaFlat(arr, props)
+  } else {
+    return arr
+  }
+}
+// 获取某个数组中某个字段的值，拼接成字符串。
+// 举例： const arr = [{name:'a'}, {name:'b'}]
+// getField(arr, 'name')----> 'a,b'
+export const getField = function (arr, field, split = ',') {
+  return arr.reduce((prev, item) => [...prev, item[field]], []).join(split)
+}
+// 获取某个数组中字段isChecked为true的条目。并取出其中特定字段。
+// 举例：const arr = [{id:1, isChecked: true}, {id:2, isChecked:false}, {id:2, isChecked:true}]
+// getChecked(arr, 'id')  ---> 1,2
+export const getChecked = function (arr, field, checkStr = 'isChecked', split = ',') {
+  return arr.reduce((prev, item) => (item[checkStr] && prev.push(item[field]), prev), []).join(split)
+}
+// 数组分块
+// 举例子： chunk([1,2,3,4,5], 2) ====>   [[1,2], [3, 4], [5]]
+export const chunk = function (arr, size = 0) {
+  if(!isArray(arr)) {throw new Error('arr必须是数组类型')}
+  size = Number(size)
+  if(!isGt0(size)) {throw new Error('size必须为大于0的整数')}
+  var targetArr = []
+  for(var i = 0; i < arr.length; i += size) {
+    targetArr.push(arr.slice(i, i + size));
+  }
+  return targetArr
+}
+// 数组（a 相对于 b 的）交集
+// 举例子: difference([1,2,3], [1,2]) ====> [1, 2]
+export const intersect = function (arr1, arr2){
+  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  const tmp = new Set(arr2)
+  return arr1.filter(x => tmp.has(x))
+}
+// 数组（a 相对于 b 的）差集
+// 举例子: difference([1,2,3], [1,2]) ====> [3]
+export const difference = function (arr1, arr2){
+  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  const b = new Set(arr2)
+  return arr1.filter(x => !b.has(x))
+}
 /*
-**************字符串操作********************
+**********************************************************************************************
+******************************************字符串操作*********************************************
+**********************************************************************************************
 */
 // 去除字符串的首尾空格
 export const trim = function (str = '') {
@@ -272,42 +377,9 @@ export const copyLink = function (e){
   // return this.$Message.success('复制成功')
 }
 /*
-**************数组操作********************
-*/
-// 删除数组中某个元素
-// const arr = ['a', 'b', 'c']
-// remove(arr, 'b') ====> arr变更为['a', 'c']
-export const remove = function(arr, item) {
-  if (arr.length) {
-    var index = arr.indexOf(item);
-    if (index > -1) { return arr.splice(index, 1) }
-  }
-}
-// 数组、字符串元素复制N次 
-// 举例(重复生成数组元素)： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
-// 举例（重复生成字符串）： repeat('abc', 2) ====>  'abcabc'
-export const repeat = function(obj = '', times = 1) {
-  let res = isArray(obj) ? [] : ''
-  if(isArray(obj)) {
-    for(let i =0; i < range(times, 1); i++) {
-      const tmp = deepCopy(obj).map(v => ({...v, _id: guID()}))
-      res = [...res, ...tmp]
-    }
-  } else {
-    for(let j = 0; j < range(times, 1); j++){
-      res += obj
-    }
-  }
-  return res
-}
-// 按照某个字段进行排序。
-// 举例：sortByProp([{name:'ss', age:30}, {name:'dd', age:14}], 'age') ----> [{name:'dd', age:14}, {name:'ss', age:30}]
-// increase不传默认升序， 传false降序
-export const sortByProp = function (arr, str, increase = true) {
-  return arr.sort((a, b) => increase ? a[str] - b[str] : b[str] - a[str])
-}
-/*
-**************JSON操作********************
+**********************************************************************************************
+******************************************JSON操作*********************************************
+**********************************************************************************************
 */
 // 格式化JSON, 将null, undefined,转换为''，否则后端会认为undefined和null为字符串导致bug
 // 举例子：formatJSON({name:null, age:undefined, school: '清华大学'}) ---> {name:'', age:'', school: '清华大学'}
@@ -327,7 +399,7 @@ export const checkJSON = function (obj) {
 // 举例子： JSON2url('../advise/index', { from: 'index', id_str:'1243' }) -----> '../advise/index?from=index&id_str=1243'
 export const JSON2url = function (url = '', params = {}){
   params = formatJSON(params)
-  return Object.keys(params).reduce((prev, item, index) => {
+  return Object.keys(params).reduce((prev, item) => {
     prev += prev.includes('?') ? '&' : '?'
     prev += `${item}=${encodeURIComponent(params[item])}`
     return prev
@@ -343,14 +415,6 @@ export const url2JSON = function (url = '') {
     const [key, val] = item.split('=')
     return { ...prev, [key]: decodeURIComponent(val) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
   }, {})
-}
-/**
-* 数组去重
-* 举例： noSame([1,2,3,4,'1'])
-*/
-export const noSame = function(arr) {
-  const newData = arr.reduce((prev, item) => (prev.set(item, item), prev), new Map())
-  return [...newData.keys()]
 }
 //base64数据导出文件，文件下载
 /**
@@ -427,35 +491,6 @@ export const random = function (lower, upper){
     })
 })
 */
-//递归解析数组中某个字段最深层该字段数组平铺。举例子：获取数组中每个对象的最深层的child属性
-// const arr = [{ 
-//   name: 'a',
-//   child:[{
-//       name:'b',
-//       child: [ { name:'c' }]
-//   }]
-// }]
-//getAreaFlat(arr, 'child')------> [{name:'c'}]
-export const getAreaFlat = function (arr, props) {
-  if(arr.some(item => isArray(item[props]) && item[props].length)) {
-    arr = arr.reduce((prev, item) => isArray(item[props]) && item[props].length ? [...prev, ...item[props]] : [...prev, item], [])
-    return getAreaFlat(arr, props)
-  } else {
-    return arr
-  }
-}
-// 获取某个数组中某个字段的值，拼接成字符串。
-// 举例： const arr = [{name:'a'}, {name:'b'}]
-// getField(arr, 'name')----> 'a,b'
-export const getField = function (arr, field, split = ',') {
-  return arr.reduce((prev, item) => [...prev, item[field]], []).join(split)
-}
-// 获取某个数组中字段isChecked为true的条目。并取出其中特定字段。
-// 举例：const arr = [{id:1, isChecked: true}, {id:2, isChecked:false}, {id:2, isChecked:true}]
-// getChecked(arr, 'id')  ---> 1,2
-export const getChecked = function (arr, field, checkStr = 'isChecked', split = ',') {
-  return arr.reduce((prev, item) => (item[checkStr] && prev.push(item[field]), prev), []).join(split)
-}
 // 获取部分字段。举例：
 // const obj = {name:'', age:123,school:{hh:11, kj:true}, asd:'qqwq'}
 // getProps(obj, {name:'', school:{hh:''}, asd:''}) ----> 得到其中部分字段。这个函数可以用户提升小程序列表页和详情页大量数据的渲染性能
@@ -479,32 +514,6 @@ export const getProps = function (obj, props) {
     return obj
   }
 }
-// 数组分块
-// 举例子： chunk([1,2,3,4,5], 2) ====>   [[1,2], [3, 4], [5]]
-export const chunk = function (arr, size = 0) {
-  if(!isArray(arr)) {throw new Error('arr必须是数组类型')}
-  size = Number(size)
-  if(!isGt0(size)) {throw new Error('size必须为大于0的整数')}
-  var targetArr = []
-  for(var i = 0; i < arr.length; i += size) {
-    targetArr.push(arr.slice(i, i + size));
-  }
-  return targetArr
-}
-// 数组（a 相对于 b 的）交集
-// 举例子: difference([1,2,3], [1,2]) ====> [1, 2]
-export const intersect = function (arr1, arr2){
-  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
-  const tmp = new Set(arr2)
-  return arr1.filter(x => tmp.has(x))
-}
-// 数组（a 相对于 b 的）差集
-// 举例子: difference([1,2,3], [1,2]) ====> [3]
-export const difference = function (arr1, arr2){
-  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
-  const b = new Set(arr2)
-  return arr1.filter(x => !b.has(x))
-}
 // 保证json格式数据的可靠获取。
 // 举例子：const obj = { area: { city: null, cityName:'北京' }, areaName: '中国' }
 // safeGet(() => obj.area.city.town, '') ---> ''
@@ -518,7 +527,9 @@ export const safeGet = function (run, defaultVal = '') {
 }
 
 /*
-**************金额操作********************
+**********************************************************************************************
+******************************************金额操作*********************************************
+**********************************************************************************************
 */
 /*
   * 参数说明：
@@ -622,7 +633,11 @@ export const afterNsecond = function (after = 60) {
   return new Date(dt.getTime() + after * 1000)
 }
 
-
+/*
+**********************************************************************************************
+******************************************业务函数*********************************************
+**********************************************************************************************
+*/
 /**
  * 轻提示
  * @param str 提示的字符串内容
