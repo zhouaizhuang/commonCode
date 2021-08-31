@@ -621,11 +621,9 @@ export const getDay = function (date) {
 // 获取实时   年-月-周-日-时-分-秒
 // 举例： socketTime('2020-03-05') ---> 返回的就是2020年3月5日的年月日数据
 // socketTime() // 默认返回当天数据
-export const socketTime = function (date = new Date()) {
-  if(!isDate(date)) {
-    date = date.replace(/[-]/g, "/")
-  }
-  const dt = new Date(date)
+export const socketTime = function (t = new Date()) {
+  if(!isDate(t)) { t = t.replace(/[-]/g, "/") }
+  const dt = new Date(t)
   const year = String(dt.getFullYear())
   const _month = String(dt.getMonth() + 1)
   const month = addZero(_month, 2)
@@ -639,17 +637,19 @@ export const socketTime = function (date = new Date()) {
   return { year, month, _month, day, _day, weekDay, _weekDay, hour, minutes, seconds }
 }
 /**
+ * 生成格式化时间字符串
  * @举例 dateFormater('YYYY-MM-DD HH:mm') ==> 2019-06-26 18:30
  * @举例 dateFormater('YYYYMMDD-hh:mm:ss', '2020-08-12 09:13:54') ==> 20200812-09:13:54
 */
-export const dateFormater = function (formater, t){
-  const date = t ? new Date(t) : new Date()
-  const [Y, M, D, H, m, s] = [date.getFullYear() + '', date.getMonth() + 1, date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()]
+export const dateFormater = function (formater, t = new Date()){
+  if(!isDate(t)) { t = t.replace(/[-]/g, "/") }
+  const dt = new Date(t)
+  const [Y, M, D, h, m, s] = [dt.getFullYear() + '', dt.getMonth() + 1, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds()]
   return formater.replace(/YYYY|yyyy/g, Y)
-    .replace(/YY|yy/g, Y.substr(2,2))
+    .replace(/YY/g, Y.substr(2,2))
     .replace(/MM/g, (M < 10 ? '0' : '') + M)
     .replace(/DD/g, (D < 10 ? '0' : '') + D)
-    .replace(/HH|hh/g, (H < 10 ? '0' : '') + H)
+    .replace(/hh/g, (h < 10 ? '0' : '') + h)
     .replace(/mm/g, (m < 10 ? '0' : '') + m)
     .replace(/ss/g, (s < 10 ? '0' : '') + s)
 }
