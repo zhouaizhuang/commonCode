@@ -256,6 +256,8 @@ export const remove = function(arr, item) {
 // 数组、字符串元素复制N次 
 // 举例(重复生成数组元素)： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
 // 举例（重复生成字符串）： repeat('abc', 2) ====>  'abcabc'
+// 字符串复制实现： Array(3).join(0) ====> '00'    "0".repeat(2) ===> '00'
+// 引用类型复制实现： Array(2).fill([{name: '张三'}]) ====> [[{name: '张三'}], [{name: '张三'}]]
 export const repeat = function(obj = '', times = 1) {
   let res = isArray(obj) ? [] : ''
   if(isArray(obj)) {
@@ -474,11 +476,18 @@ export const exitFullscreen = function (){
     alert("切换失败,可尝试Esc退出")
   }
 }
-// 返回一个lower - upper之间的随机数
-//random(0, 0.5) ==> 0.3567039135734613
-//random(2, 1) ===> 1.6718418553475423
-//random(-2, -1) ==> -1.4474325452361945
-export const random = function (lower, upper){
+/**
+ * 返回一个lower - upper之间的随机数
+ * @param lower 下限
+ * @param upper 上限
+ * @举例 random(0, 0.5) ==> 0.3567039135734613
+ * @举例 random(1, 2) ===> 1.6718418553475423
+ * @举例 random(-2, -1) ==> -1.4474325452361945
+ * 原生参考代码:  a = new Date % 100; // 两位整数随机数
+ * a = new Date % 1000; // 三位整数随机数
+ * a = new Date % 10000; // 四位整数随机数...依次类推
+ */
+export const random = function (lower, upper) {
     lower = +lower || 0
     upper = +upper || 0
     return Math.random() * (upper - lower) + lower
@@ -491,11 +500,15 @@ export const random = function (lower, upper){
     })
 })
 */
-// 获取部分字段。举例：
-// const obj = {name:'', age:123,school:{hh:11, kj:true}, asd:'qqwq'}
-// getProps(obj, {name:'', school:{hh:''}, asd:''}) ----> 得到其中部分字段。这个函数可以用户提升小程序列表页和详情页大量数据的渲染性能
-// 还可以直接传入对象数组像这种[{...},{...},{...},{...}]，返回相应字段的对象数组
-// 主要运用于优化移动端大量数据下拉加载更多导致setData的数据很庞大
+/**
+ * 获取部分字段。举例：
+ * @param obj 需要读取的对象
+ * @param props 需要得到的字段
+ * @举例 const obj = {name:'', age:123,school:{hh:11, kj:true}, asd:'qqwq'}
+ * @举例 getProps(obj, {name:'', school:{hh:''}, asd:''}) ----> 得到其中部分字段。这个函数可以用户提升小程序列表页和详情页大量数据的渲染性能
+ * 还可以直接传入对象数组像这种[{...},{...},{...},{...}]，返回相应字段的对象数组
+ * 主要运用于优化移动端大量数据下拉加载更多导致setData的数据很庞大
+ */
 export const getProps = function (obj, props) {
   if(!isObject(props)) { throw new Error('参数有误，参数必须为object') }
   if(isArray(obj)) {
@@ -514,10 +527,15 @@ export const getProps = function (obj, props) {
     return obj
   }
 }
-// 保证json格式数据的可靠获取。
-// 举例子：const obj = { area: { city: null, cityName:'北京' }, areaName: '中国' }
-// safeGet(() => obj.area.city.town, '') ---> ''
-// 避免了这种写法： obj.area && obj.area.city && obj.area.city.town ? obj.area.city.town : ''
+
+/**
+ * 保证json格式数据的可靠获取
+ * @param run 需要执行的函数
+ * @param defaultVal 默认值
+ * @举例 const obj = { area: { city: null, cityName:'北京' }, areaName: '中国' }
+ * @举例 safeGet(() => obj.area.city.town, '') ---> ''
+ * @举例 避免了这种写法： obj.area && obj.area.city && obj.area.city.town ? obj.area.city.town : ''
+ */
 export const safeGet = function (run, defaultVal = '') {
   try {
     return run() || defaultVal
@@ -531,19 +549,17 @@ export const safeGet = function (run, defaultVal = '') {
 ******************************************金额操作*********************************************
 **********************************************************************************************
 */
-/*
-  * 参数说明：
-  * n：要格式化的数字
-  * type：float->小数形式。  intFloat->当整数的时候不需要带两个小数0，带小数时，保留几位小数
-  * prev: 前置金额符号等等
-  * prec：保留几位小数
-  * dec：小数点符号
-  * sep：千分位符号
-  * 
-  * 举例：formatMoney(12322.1223, 'float') ----- > "￥12,322.12"
-  * 举例：formatMoney(12322.1223, 'float', '', 1) ------> "12,322.1"  固定显示1位小数
-  * 举例：formatMoney(12322, 'intFloat') ------> "12322"  当没有小数点就显示整数，否则显示整数
-*/
+/**
+ * 四舍五入返回N位有效数字（常用于金额计算）
+ * @param num 要格式化的数字
+ * @param type float->小数形式。  intFloat->当整数的时候不需要带两个小数0，带小数时，保留几位小数
+ * @param prev 前置金额符号等等
+ * @param prec 保留几位小数
+ * @param sep 千分位符号
+ * @举例 formatMoney(12322.1223, 'float') ====> "￥12,322.12" // 保留0位小数四舍五入得到 12
+ * @举例 formatMoney(12322.1223, 'float', '', 1) ------> "12,322.1"  固定显示1位小数
+ * @举例 formatMoney(12322, 'intFloat') ------> "12322"  当没有小数点就显示整数，否则显示整数
+ */
 export const formatMoney = function (num = 0, type = 'float', prev = '￥', prec = 2, dec = '.', sep = ',') {
   num = String(num).replace(/[^0-9+-Ee.]/g, '') || '0'
   prec = Number(prec)
@@ -556,14 +572,27 @@ export const formatMoney = function (num = 0, type = 'float', prev = '￥', prec
   floatStr += new Array(prec + 1).join('0')
   return `${prev}${intStr}${dec}${floatStr.slice(0, prec)}`
 }
-// 金额计算，四舍五入返回N位有效数字
+/**
+ * 四舍五入返回N位有效数字（常用于金额计算）
+ * @param num 需要处理的的数字、支持传入字符串
+ * @param prec 保留的小数位数
+ * @举例 round(12.35) ==> 12  // 12.35 保留0位小数四舍五入得到 12
+ * @举例 round(12.35, 1) ==> 12.4 // 12.35 保留1位小数四舍五入得到 12.4
+ */
 export const round = function (num, prec = 0) {
   prec = Number(prec)
   prec < 0 && (prec = 0)
   const k = Math.pow(10, prec)
   return String(Math.round(Number(num) * k) / k)
 }
-// 上限为lower
+/**
+ * 数据范围
+ * @param num 需要限制的数字
+ * @param min 限制最小值
+ * @param max 限制最大值
+ * @举例 range(12.23, 7, 10)  ===> 10 // 上限为10 因此返回10
+ * @举例 range(12.23, 14, 20)  ===> 14 // 下限为14 因此返回10
+ */
 export const range = function (num, min = null, max = null) {
   if(min !== null) {
     num = Number(num) < Number(min) ? min : num
