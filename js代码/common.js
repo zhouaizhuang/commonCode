@@ -683,25 +683,25 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
 /**
  * 开启loading
  * @param str 提示的字符串内容
+ * @param type loading类型   0：默认是蓝色转圈圈
  * @param dom 可以手动传入需要加载的dom结构
- * @param style 可以手动传入需要加载的样式
+ * @param css 可以手动传入需要加载的样式
  * @举例 showLoading()  // 显示出loading转圈圈动画
+ * 备注：次函数可以扩展，未来可以支持多种不同的loading，只要传入不同的type值就可以
  */
-export const showLoading = function(str='加载中...', dom = '', style = '') {
-  var divObj = document.createElement("div") // 创建dom
-  divObj.setAttribute("id","z-loading")
-  divObj.innerHTML = dom || `
-  <div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;">
-    <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center;">
-      <svg style="width:60px;height:60px;animation: rotate360 2s linear infinite;">
-        <circle cx="30" cy="30" r="20" fill="none" style="color:#1989FA;animation: loading-dash 1.5s ease-in-out infinite;stroke-dasharray: 90 120;stroke-dashoffset: 0;stroke-width: 2;stroke:#1989FA;stroke-linecap: round;"></circle>
-      </svg>
-      <div style="color:#0094FF;text-align:center;font-size:14px;">${str}</div>
-    </div>
-  </div>`
-  var styleObj = document.createElement('style') // 创建样式
-  styleObj.id = 'z-style-id'
-  styleObj.innerHTML= style || `
+ export const showLoading = function({str='加载中...', type = 0, dom ='', css = ''} = {}) {
+  const domObj = {
+    0: `<div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;background:rgba(255,255,255)">
+      <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center;">
+        <svg style="width:60px;height:60px;animation: rotate360 2s linear infinite;">
+          <circle cx="30" cy="30" r="20" fill="none" style="color:#1989FA;animation: loading-dash 1.5s ease-in-out infinite;stroke-dasharray: 90 120;stroke-dashoffset: 0;stroke-width: 2;stroke:#1989FA;stroke-linecap: round;"></circle>
+        </svg>
+        <div style="color:#0094FF;text-align:center;font-size:0.3rem;font-weight:700;">${str}</div>
+      </div>
+    </div>`
+  }
+  const cssObj = {
+    0: `
     @keyframes rotate360 {
       0% {transform: rotate(0);}
       100% {transform: rotate(360deg);}
@@ -711,22 +711,26 @@ export const showLoading = function(str='加载中...', dom = '', style = '') {
       50% { stroke-dasharray: 90 150; stroke-dashoffset: -40px; }
       100% { stroke-dasharray: 90 150; stroke-dashoffset: -120px; }
     }`
-  if(!document.getElementById('z-style-id')) {
-    document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
   }
-  if(!document.getElementById("z-loading")) {
-    document.body.appendChild(divObj) // 添加Dom节点到body中
-  }
-  document.getElementById("z-loading").style.display = 'block'
+  // 创建样式
+  var styleObj = document.createElement('style')
+  styleObj.id = 'z-style-id'
+  styleObj.innerHTML= css || cssObj[type]
+  document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
+  // 创建dom
+  var divObj = document.createElement("div")
+  divObj.setAttribute("id","z-loading")
+  divObj.innerHTML = dom || domObj[type]
+  document.body.appendChild(divObj) // 添加Dom节点到body中
 }
 /**
  * 关闭loading
  * @举例 hideLoading()  // 关闭loading转圈圈动画（将DOM和样式移除了）
  */
 export const hideLoading = function(){
-  // document.body.removeChild(document.getElementById("z-loading")) // 清除DOM
-  // document.getElementsByTagName('head').item(0).removeChild(document.getElementById('z-style-id')) // 清除样式
-  document.getElementById("z-loading").style.display = 'none' // loading切换可能是频繁的，因此没必要采用上面dom清除操作
+  document.body.removeChild(document.getElementById("z-loading")) // 清除DOM
+  document.getElementsByTagName('head').item(0).removeChild(document.getElementById('z-style-id')) // 清除样式
+  // document.getElementById("z-loading").style.display = 'none' // 如果只有一种loading，可以采用样式控制
 }
 /**
  * 设置标题
