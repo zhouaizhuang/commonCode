@@ -681,6 +681,30 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
   setTimeout(() => document.body.removeChild(pObj), time);
 }
 /**
+ * 往网页头部动态追加css
+ * @param css 可以手动传入需要载入的样式
+ * @param id 这个css的id，方便以后进行删除操作
+ * @举例 addCss('@keyframes moveY {0%{transform: translateY(0%);}100%{transform: translateY(-100%);}}')  // 载入移动动画样式
+ */
+export const addCss = function (css = '', id = ""){
+  var styleObj = document.createElement('style')
+  styleObj.id = id
+  styleObj.innerHTML= css
+  document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
+}
+/**
+ * 往网页头部动态追加Dom
+ * @param dom 可以手动传入需要载入的Dom
+ * @param id 这个css的id，方便以后进行删除操作
+ * @举例 addDom('<div>234324</div>')  // 载入的dom
+ */
+ export const addDom = function (dom = '', id = ""){
+  var divObj = document.createElement("div")
+  divObj.id = id
+  divObj.innerHTML = dom
+  document.body.appendChild(divObj) // 添加Dom节点到body中
+}
+/**
  * 开启loading
  * @param str 提示的字符串内容
  * @param type loading类型   0：默认是蓝色转圈圈
