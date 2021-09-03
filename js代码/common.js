@@ -261,9 +261,13 @@ export const remove = function(arr, item) {
 export const repeat = function(obj = '', times = 1) {
   let res = isArray(obj) ? [] : ''
   if(isArray(obj)) {
-    for(let i =0; i < range(times, 1); i++) {
-      const tmp = deepCopy(obj).map(v => ({...v, _id: guID()}))
-      res = [...res, ...tmp]
+    if(isObject(obj[0])) {
+      for(let i =0; i < range(times, 1); i++) {
+        const tmp = deepCopy(obj).map(v => ({...v, _id: guID()}))
+        res = [...res, ...tmp]
+      }
+    } else {
+      res = [...obj, ...obj]
     }
   } else {
     for(let j = 0; j < range(times, 1); j++){
