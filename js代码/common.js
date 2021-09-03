@@ -28,7 +28,7 @@ export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform ==
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 export const isPhantomJS = UA && /phantomjs/.test(UA)
 export const isFF = UA && UA.match(/firefox\/(\d+)/)
-export const isPhoneNum = /^1[3456789]\d{9}$/.test(str) // 检测是否是手机号码
+export const isPhoneNum = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
 
 // 异步加载js
 // 举例子：await loadJs("//res.wx.qq.com/open/js/jweixin-1.6.0.js");
@@ -687,10 +687,21 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
  * @举例 addCss('@keyframes moveY {0%{transform: translateY(0%);}100%{transform: translateY(-100%);}}')  // 载入移动动画样式
  */
 export const addCss = function (css = '', id = ""){
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.getElementsByTagName('head').item(0).removeChild(selectDom) } // 清除样式
   var styleObj = document.createElement('style')
   styleObj.id = id
   styleObj.innerHTML= css
   document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
+}
+/**
+ * 删除css结点
+ * @param id 需要删除的结点的id
+ * @举例 removeCss('z-loading-style')  // 删除id为z-loading-style的css结点
+ */
+ export const removeCss = function (id = '') {
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.getElementsByTagName('head').item(0).removeChild(selectDom) } // 清除样式
 }
 /**
  * 往网页头部动态追加Dom
@@ -699,10 +710,39 @@ export const addCss = function (css = '', id = ""){
  * @举例 addDom('<div>234324</div>')  // 载入的dom
  */
  export const addDom = function (dom = '', id = ""){
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.body.removeChild(selectDom) } // 清除DOM
   var divObj = document.createElement("div")
   divObj.id = id
   divObj.innerHTML = dom
   document.body.appendChild(divObj) // 添加Dom节点到body中
+}
+/**
+ * 删除DOM结点
+ * @param id 需要删除的结点的id
+ * @举例 removeDom('z-loading')  // 删除id为z-loading的dom
+ */
+export const removeDom = function (id = ''){
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.body.removeChild(selectDom) } // 清除DOM
+}
+/**
+ * 显示DOM
+ * @param id 需要显示的结点的id
+ * @举例 show('z-loading')  // 显示id为z-loading的dom结点
+ */
+export const show = function (id =''){
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.getElementById(id).style.display = 'block' }
+}
+/**
+ * 删除DOM结点
+ * @param id 需要删除的结点的id
+ * @举例 hide('z-loading')  // 隐藏id为z-loading的dom结点
+ */
+export const hide = function (id =''){
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.getElementById(id).style.display = 'none' }
 }
 /**
  * 开启loading
@@ -736,25 +776,18 @@ export const addCss = function (css = '', id = ""){
       100% { stroke-dasharray: 90 150; stroke-dashoffset: -120px; }
     }`
   }
-  // 创建样式
-  var styleObj = document.createElement('style')
-  styleObj.id = 'z-style-id'
-  styleObj.innerHTML= css || cssObj[type]
-  document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
-  // 创建dom
-  var divObj = document.createElement("div")
-  divObj.setAttribute("id","z-loading")
-  divObj.innerHTML = dom || domObj[type]
-  document.body.appendChild(divObj) // 添加Dom节点到body中
+  const domStr = dom || domObj[type]
+  const cssStr = css || cssObj[type]
+  addCss(cssStr, 'z-loading-style') // 创建样式
+  addDom(domStr, 'z-loading-dom') // 创建dom
 }
 /**
  * 关闭loading
  * @举例 hideLoading()  // 关闭loading转圈圈动画（将DOM和样式移除了）
  */
 export const hideLoading = function(){
-  document.body.removeChild(document.getElementById("z-loading")) // 清除DOM
-  document.getElementsByTagName('head').item(0).removeChild(document.getElementById('z-style-id')) // 清除样式
-  // document.getElementById("z-loading").style.display = 'none' // 如果只有一种loading，可以采用样式控制
+  removeCss('z-loading-style')
+  removeDom('z-loading-dom')
 }
 /**
  * 设置标题
