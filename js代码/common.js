@@ -835,5 +835,14 @@ export const map2Obj = function (map){
   for(let [k, v] of map) { obj[k] = v }
   return obj
 }
-
+/**
+ * Map转对象
+ * @param map map对象
+ * @举例 obj2Map({1: 'one', 2: 'two'}) // [[1, 'one'], [2, 'two']]
+ */
+export const obj2Map = function (obj){
+  let map = new Map()
+  for(let k of Object.keys(obj)) { map.set(k, obj[k]) }
+  return map
+}
 
