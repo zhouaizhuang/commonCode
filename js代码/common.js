@@ -809,3 +809,31 @@ export const setTitle = function  (title) {
 export const goUrl = function(href) {
   window.location.href = href
 }
+
+/**
+ * 数据结构
+ */
+
+
+/**
+ * Map
+ * @属性方法 .size()   .set(key, value)   .get(key)   .has(key)   .delete(key)   .clear()
+ * @遍历方法 .keys()   .values()   .entries()   .forEach((val, key, map) => {console.log(val, key, map)})
+ * @举例 const map = new Map([[1, 'one'], [2, 'two']]) 转数组后可以使用数组方法
+ * [...map.keys()] ===> [1, 2]
+ * [...map.values()] ===> ['one', 'two']
+ * [...map.entires()] ===> [[1, 'one'], [2, 'two']]
+ * [...map] ===> [[1, 'one'], [2, 'two']]
+ */
+/**
+ * Map转对象
+ * @param map map对象
+ * @举例 map2Obj(new Map([[1, 'one'], [2, 'two']]))  // {1: 'one', 2: 'two'}
+ */
+export const map2Obj = function (map){
+  let obj = Object.create(null)
+  for(let [k, v] of map) { obj[k] = v }
+  return obj
+}
+
+
