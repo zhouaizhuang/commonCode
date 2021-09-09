@@ -29,9 +29,11 @@ export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 export const isPhantomJS = UA && /phantomjs/.test(UA)
 export const isFF = UA && UA.match(/firefox\/(\d+)/)
 export const isPhoneNum = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
+export const isWeChat = UA && UA.match(/MicroMessenger/i) == "micromessenger" // 是否是微信
+export const isQianFan = UA && UA.match(/QianFan/i) == "QianFan" // 是否是微信
 
 // 异步加载js
-// 举例子：await loadJs("//res.wx.qq.com/open/js/jweixin-1.6.0.js");
+// 举例子：await loadJs("https://res.wx.qq.com/open/js/jweixin-1.6.0.js");
 export const loadJs = async function(url) {
   let loadedJs = []
   return new Promise((resolve, reject) => {
@@ -181,7 +183,7 @@ export const toObject = function (arr) {
 // 检测是否大致相等
 // looseEqual(1,'1') ===> true
 // looseEqual({name:'zaz'},{'name':'zaz'}) ===> true
-function looseEqual (a, b) {
+export const looseEqual = function (a, b) {
   if (a === b) { return true }
   var isObjectA = isObject(a)
   var isObjectB = isObject(b)
@@ -332,7 +334,7 @@ export const chunk = function (arr, size = 0) {
   return targetArr
 }
 // 数组（a 相对于 b 的）交集
-// 举例子: difference([1,2,3], [1,2]) ====> [1, 2]
+// 举例子: intersect([1,2,3], [1,2]) ====> [1, 2]
 export const intersect = function (arr1, arr2){
   if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
   const tmp = new Set(arr2)
@@ -416,7 +418,8 @@ export const JSON2url = function (url = '', params = {}){
  * @举例 url2JSON('http://www.baidu.com?name=asd&age=12') ----> {name: "asd", age: "12"}
  */
 export const url2JSON = function (url = '') {
-  const paramsStr = url.includes('?') ? (url.split('?')[1] || '') : url
+  let paramsStr = url.includes('?') ? (url.split('?')[1] || '') : url
+  paramsStr = url.split('#')[0] || '' // 防止一些url中混入#号放在?号之后，此处做一个适配
   return paramsStr.split('&').reduce((prev, item) => {
     const [key, val] = item.split('=')
     return { ...prev, [key]: decodeURIComponent(val) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
@@ -688,7 +691,7 @@ export const showToast = function (str, time = 1500, innerHTML = '') {
  * 往网页头部动态追加css
  * @param css 可以手动传入需要载入的样式
  * @param id 这个css的id，方便以后进行删除操作
- * @举例 addCss('@keyframes moveY {0%{transform: translateY(0%);}100%{transform: translateY(-100%);}}')  // 载入移动动画样式
+ * @举例 addCss('@keyframes moveY {0%{transform: translateY(0%);}100%{transform: translateY(-100%);}}', 'z-loading-style')  // 载入移动动画样式
  */
 export const addCss = function (css = '', id = ""){
   const selectDom = document.getElementById(id)
@@ -697,6 +700,7 @@ export const addCss = function (css = '', id = ""){
   styleObj.id = id
   styleObj.innerHTML= css
   document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
+  // document.head.appendChild(styleObj);
 }
 /**
  * 删除css结点
@@ -711,7 +715,7 @@ export const addCss = function (css = '', id = ""){
  * 往网页头部动态追加Dom
  * @param dom 可以手动传入需要载入的Dom
  * @param id 这个css的id，方便以后进行删除操作
- * @举例 addDom('<div>234324</div>')  // 载入的dom
+ * @举例 addDom('<div>234324</div>', 'z-loading')  // 载入的dom
  */
  export const addDom = function (dom = '', id = ""){
   const selectDom = document.getElementById(id)
@@ -802,7 +806,7 @@ export const setTitle = function  (title) {
   document.title = title
 }
 /**
- * 轻提示
+ * 跳转
  * @param href 链接地址
  * @举例 goUrl('https://www.baidu.com')  // 跳转到百度
  */
@@ -846,3 +850,57 @@ export const obj2Map = function (obj){
   return map
 }
 
+/**
+ * H5业务函数
+ */
+export const wxInit = async function() {
+  let weChatInit = false
+  // 这个地方需要读取数据！！！需要开发
+  // const {appId, timestamp, nonceStr, signature} = await getData().then(res => res.data)
+  return new Promise(function (resolve, reject) {
+    if (!isWeChat() || weChatInit) { return resolve() }
+    const url = window.location.href.split('#')[0]
+    const obj = {
+      debug: false, appId, timestamp, nonceStr, signature,
+      url: encodeURIComponent(url),
+      jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"],
+      openTagList: ["wx-open-launch-weapp"] // 跳转小程序时必填
+    }
+    wx.config(obj)
+    wx.ready(() => { wxInited = true; resolve(); })
+    wx.error(() => reject())
+  })
+}
+//设置微信分享
+export const setWxShare = async function({ title = '', imgUrl = '', desc = '', link = window.location.href } = {}) {
+  if(isWeChat()) {
+    await loadJs('https://res.wx.qq.com/open/js/jweixin-1.6.0.js') //加载微信js
+    await wxInit() //微信初始化
+    wx.ready(function () { 
+      // 分享朋友圈
+      wx.updateTimelineShareData({ 
+        title, // 分享标题
+        desc, // 分享描述
+        link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl, // 分享图标
+        success: () => {}
+      })
+      // 分享好友
+      wx.updateAppMessageShareData({ 
+        title, // 分享标题
+        desc, // 分享描述
+        link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl, // 分享图标
+        success: () => {}
+      })
+    })
+  } else if(isQianFan()){
+    try {
+      QFH5.setShareInfo(title, image, description, lineLink, function ( state, data) {
+        if(state != 1) { alert(data.error) }
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
