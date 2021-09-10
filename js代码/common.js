@@ -29,23 +29,6 @@ export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 export const isPhantomJS = UA && /phantomjs/.test(UA)
 export const isFF = UA && UA.match(/firefox\/(\d+)/)
 export const isPhoneNum = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
-export const isWeChat = UA && UA.match(/MicroMessenger/i) == "micromessenger" // 是否是微信
-export const isQianFan = UA && UA.match(/QianFan/i) == "QianFan" // 是否是微信
-
-// 异步加载js
-// 举例子：await loadJs("https://res.wx.qq.com/open/js/jweixin-1.6.0.js");
-export const loadJs = async function(url) {
-  let loadedJs = []
-  return new Promise((resolve, reject) => {
-    if (loadedJs.includes(url)) { resolve() }
-    let script = document.createElement("script")
-    script.type = "text/javascript"
-    script.src = url
-    script.onload = function () { loadedJs.push(url); resolve() }
-    script.onerror = function () { reject() }
-    document.head.appendChild(script)
-  })
-}
 // 执行此函数，或导致函数执行阻塞在此处t毫秒
 // 举例子: await wait(500);   那么程序会在此处阻塞等待500ms
 export const wait = async function(t) {
@@ -612,22 +595,35 @@ export const range = function (num, min = null, max = null) {
 /*
 **************日期时间操作********************
 */
-// 获取日期字符串。
-// 举例：获取今天日期:getDateStr(0)--->20200904
-// 明天日期用-分割：getDateStr(1, '-')--->2020-09-05
+/**
+ * 获取日期字符串。
+ * @param AddDayCount 传0代表今天，传1代表明天
+ * @param split 日期分割符
+ * @举例 getDateStr(0) ---> 20200904    getDateStr(1) ---> 20200905
+ * @举例 分割：getDateStr(1, '-')--->2020-09-05
+ */
 export const getDateStr = function (AddDayCount = 0, split = '') {
   const dt = new Date()
   dt.setDate(dt.getDate() + AddDayCount) // 获取AddDayCount天后的日期
   return `0000${dt.getFullYear()}`.slice(-4) + split + `00${(dt.getMonth() + 1)}`.slice(-2) + split + `00${dt.getDate()}`.slice(-2)
 }
-// 获取传入日期是星期几, 不传默认是今天
-export const getDay = function (date) {
-  let day = date ? new Date(date).getDay() : new Date().getDay()
+/**
+ * 获取星期几， 不传默认是今天
+ * @param t 时间格式字符串比如： '2021-10-01'   当然，也同时支持传入new date('2021-10-01')生成的对象
+ * @举例 getDay('2020-03-05') ---> 返回的就是这个日期对应的星期几
+ * @举例 getDay() // 默认返回当天星期几
+ */
+export const getDay = function (t = new Date()) {
+  if(!isDate(t)) { t = t.replace(/[-]/g, "/") } // 为了兼容ios
+  let day = t ? new Date(t).getDay() : new Date().getDay()
   return '星期' + "日一二三四五六"[day]
 }
-// 获取实时   年-月-周-日-时-分-秒
-// 举例： socketTime('2020-03-05') ---> 返回的就是2020年3月5日的年月日数据
-// socketTime() // 默认返回当天数据
+/**
+ * 获取时间
+ * @param t 时间格式字符串比如： '2021-10-01'   当然，也同时支持传入new date('2021-10-01')生成的对象
+ * @举例 socketTime('2020-03-05') ---> 返回的就是2020年3月5日的年月日数据
+ * @举例 socketTime() // 默认返回当天数据
+ */
 export const socketTime = function (t = new Date()) {
   if(!isDate(t)) { t = t.replace(/[-]/g, "/") }
   const dt = new Date(t)
@@ -848,59 +844,4 @@ export const obj2Map = function (obj){
   let map = new Map()
   for(let k of Object.keys(obj)) { map.set(k, obj[k]) }
   return map
-}
-
-/**
- * H5业务函数
- */
-export const wxInit = async function() {
-  let weChatInit = false
-  // 这个地方需要读取数据！！！需要开发
-  // const {appId, timestamp, nonceStr, signature} = await getData().then(res => res.data)
-  return new Promise(function (resolve, reject) {
-    if (!isWeChat() || weChatInit) { return resolve() }
-    const url = window.location.href.split('#')[0]
-    const obj = {
-      debug: false, appId, timestamp, nonceStr, signature,
-      url: encodeURIComponent(url),
-      jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"],
-      openTagList: ["wx-open-launch-weapp"] // 跳转小程序时必填
-    }
-    wx.config(obj)
-    wx.ready(() => { wxInited = true; resolve(); })
-    wx.error(() => reject())
-  })
-}
-//设置微信分享
-export const setWxShare = async function({ title = '', imgUrl = '', desc = '', link = window.location.href } = {}) {
-  if(isWeChat()) {
-    await loadJs('https://res.wx.qq.com/open/js/jweixin-1.6.0.js') //加载微信js
-    await wxInit() //微信初始化
-    wx.ready(function () { 
-      // 分享朋友圈
-      wx.updateTimelineShareData({ 
-        title, // 分享标题
-        desc, // 分享描述
-        link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl, // 分享图标
-        success: () => {}
-      })
-      // 分享好友
-      wx.updateAppMessageShareData({ 
-        title, // 分享标题
-        desc, // 分享描述
-        link, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-        imgUrl, // 分享图标
-        success: () => {}
-      })
-    })
-  } else if(isQianFan()){
-    try {
-      QFH5.setShareInfo(title, image, description, lineLink, function ( state, data) {
-        if(state != 1) { alert(data.error) }
-      })
-    } catch (e) {
-      console.log(e)
-    }
-  }
 }
