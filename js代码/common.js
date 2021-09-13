@@ -696,7 +696,7 @@ export const addCss = function (css = '', id = ""){
   styleObj.id = id
   styleObj.innerHTML= css
   document.getElementsByTagName('head').item(0).appendChild(styleObj) // 添加样式到头部
-  // document.head.appendChild(styleObj);
+  // document.head.append(styleObj)
 }
 /**
  * 删除css结点
