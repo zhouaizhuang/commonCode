@@ -402,7 +402,7 @@ export const JSON2url = function (url = '', params = {}){
  */
 export const url2JSON = function (url = '') {
   let paramsStr = url.includes('?') ? (url.split('?')[1] || '') : url
-  paramsStr = url.split('#')[0] || '' // 防止一些url中混入#号放在?号之后，此处做一个适配
+  paramsStr = paramsStr.split('#')[0] || '' // 防止一些url中混入#号放在?号之后，此处做一个适配
   return paramsStr.split('&').reduce((prev, item) => {
     const [key, val] = item.split('=')
     return { ...prev, [key]: decodeURIComponent(val) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
@@ -845,3 +845,7 @@ export const obj2Map = function (obj){
   for(let k of Object.keys(obj)) { map.set(k, obj[k]) }
   return map
 }
+
+/**
+ * 链表
+ */
