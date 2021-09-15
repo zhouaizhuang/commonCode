@@ -52,7 +52,7 @@ service.interceptors.response.use(
 )
 // 封装一个get请求
 export const get = function (url, params){
-  return service.get(url, JSON2url(formatJSON(params)))
+  return service.get(url, formatJSON(params))
 }
 // 封装一个post请求
 export const post = function (url, params) {
