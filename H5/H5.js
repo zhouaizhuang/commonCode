@@ -13,6 +13,28 @@
 })(document, window)
 
 
+// rem适配版本二
+// (function () {
+//   var irate = 625;
+//   var iw = 750;
+//   var win = window;
+//   var w = document.documentElement.clientWidth;
+//   var doc = document;
+//   var irate = 625 / (iw / w);
+//   irate = Math.min(irate, 625);
+//   doc.documentElement.style.fontSize = irate * 0.16 + "px";
+//   //华为手机修正
+//   var root = window.document.documentElement;
+//   var fontSize = parseFloat(root.style.fontSize);
+//   var finalFontSize = parseFloat(
+//     window.getComputedStyle(root).getPropertyValue("font-size")
+//   );
+//   if (finalFontSize !== fontSize) {
+//     root.style.fontSize = fontSize + (fontSize - finalFontSize) + "px";
+//   }
+// })()
+
+
 /**检查浏览器是否是手机微信浏览器 */
 (function (){
   var useragent = navigator.userAgent
