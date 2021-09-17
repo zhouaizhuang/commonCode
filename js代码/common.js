@@ -677,9 +677,13 @@ export const afterNsecond = function (after = 60) {
  * @param innerHTML 采用传入的html，不使用默认的样式
  * @举例 showToast('请输入手机号码')  // 弹出“请输入手机号码”这个提示，并且1500ms后自动消失
  */
-export const showToast = function (str, time = 1500, innerHTML = '') {
+ export const showToast = function (str, time = 1500, innerHTML = '') {
   var pObj = document.createElement("div") // 创建，写内容
-  pObj.innerHTML = innerHTML || `<div style="position:fixed;top:45%;left:50%;transform: translateX(-50%);font-size:0.30rem;padding:0.2rem 0.5rem;background:#555;color:#fff;border-radius:0.15rem;">${str}</div>`       //添加内容
+  pObj.innerHTML = innerHTML || `
+  <div class="abs trbl0" style="z-index:99999;background-color: rgba(0, 0, 0, .7);">
+    <div style="position:fixed;top:45%;left:50%;transform: translateX(-50%);font-size:0.30rem;padding:0.2rem 0.5rem;background:#fff;color:#000;border-radius:0.15rem;">${str}</div>
+  </div>
+  ` //添加内容
   document.body.appendChild(pObj)
   setTimeout(() => document.body.removeChild(pObj), time);
 }
