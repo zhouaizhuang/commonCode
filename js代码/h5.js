@@ -1,21 +1,39 @@
 export const inBrowser = typeof window !== 'undefined'
 export const UA = inBrowser && window.navigator.userAgent.toLowerCase()
-export const isQianFan = UA && UA.match(/QianFan/i) == "QianFan" // 是否是微信
-export const isWeChat = UA && UA.match(/MicroMessenger/i) == "micromessenger" // 是否是微信
+export const isQianFan = () => UA && UA.match(/QianFan/i) == "QianFan" // 是否是微信
+export const isWeChat = () => UA && UA.match(/MicroMessenger/i) == "micromessenger" // 是否是微信
 /**
  * H5业务函数
  */
 /**
  * 初始化微信分享好友、分享朋友圈、跳转小程序
  * @举例 await wxInit() 
+ * <div class="rel" style="width:4.02rem;height:3rem;border-radius:80px;margin: 0 auto;">
+      <wx-open-launch-weapp
+        id="launch-btn"
+        :username="gh_id"
+        :path="`plugin://Olympics-plugin/og-index?guess_id=${$route.query.guess_id}&invitees=${$route.query.need_help_player_id}&role=user`"
+        style="position:absolute;top:0;left:0;z-index:100;width:100%;height:100%"
+      >
+        <script type="text/wxtag-template">
+          <div style="width:100%;height:150px;background-color:pink;opacity:0;">
+            去小程序中助力
+          </div>
+        </script>
+      </wx-open-launch-weapp>
+      <div class="abs l0 r0 t0" style="height:0.88rem;">
+        <img src="https://upload.qianfanyun.com/olympic_btn_empty.png" class="w100 h100">
+        <div class="abs l50 t50 txy-50 gf fs34r zx10 b nowrap">去小程序中助力</div>
+      </div>
+    </div>
  */
  export const wxInit = async function() {
   let weChatInit = false
+  const url = window.location.href.split('#')[0]
   // 这个地方需要读取数据！！！需要开发
-  // const {appId, timestamp, nonceStr, signature} = await getData().then(res => res.data)
+  // const {appId, timestamp, nonceStr, signature} = await http.get('/index/share', {url}) // url要传给后端的
   return new Promise(function (resolve, reject) {
     if (!isWeChat() || weChatInit) { return resolve() }
-    const url = window.location.href.split('#')[0]
     const obj = {
       debug: false, appId, timestamp, nonceStr, signature,
       url: encodeURIComponent(url),
@@ -23,7 +41,7 @@ export const isWeChat = UA && UA.match(/MicroMessenger/i) == "micromessenger" //
       openTagList: ["wx-open-launch-weapp"] // 跳转小程序时必填。注意公众号必须是已经认证的服务号
     }
     wx.config(obj)
-    wx.ready(() => { wxInited = true; resolve(); })
+    wx.ready(() => { weChatInit = true; resolve(); })
     wx.error(() => reject())
   })
 }
@@ -78,6 +96,12 @@ export const setWxShare = async function({ title = '', imgUrl = '', desc = '', l
     }
   }
 }
+
+
+
+
+
+/***********************跳转小程序************************** */
 /**
  * H5跳转小程序
  * @param {String} appletUrl 小程序页面路径
@@ -107,3 +131,4 @@ export const setWxShare = async function({ title = '', imgUrl = '', desc = '', l
     }
   })
 }
+/*************************************************** */
