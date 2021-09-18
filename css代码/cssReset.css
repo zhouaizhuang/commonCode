@@ -7,6 +7,9 @@ body { /* IOS禁止微信调整字体大小 */
   color: #000;
   font-size: 16px;
   line-height: 1.5;
+  height:100vh;
+  margin: 0 auto;
+  overflow-x: hidden;
 }
 input::-webkit-input-placeholder,textarea::-webkit-input-placeholder,
 input::-moz-placeholder,textarea::-moz-placeholder,
