@@ -1,5 +1,6 @@
 import axios from "axios"
-import {JSON2url, formatJSON} from "@/common.js"
+import {JSON2url, formatJSON, showToast} from "@/common.js"
+
 /***********获取token*****/
 function getToken(){
   return window.localStorage.getItem('token')
@@ -52,9 +53,34 @@ service.interceptors.response.use(
 )
 // 封装一个get请求
 export const get = function (url, params){
-  return service.get(url, formatJSON(params))
+  return service.get(JSON2url(url, formatJSON(params))).then(res => {
+    const {code, data, msg} = res.data
+    if(!code) {
+      showToast(msg)
+      return false
+    } else {
+      return data
+    }
+  })
 }
 // 封装一个post请求
 export const post = function (url, params) {
-  return service.post(url, formatJSON(params))
+  return service.post(url, formatJSON(params)).then(res => {
+    const {code, data, msg} = res.data
+    if(!code) {
+      showToast(msg)
+      return false
+    } else {
+      return data
+    }
+  })
+}
+// 封装一个post请求
+export const request = function (options) {
+  return service.request({
+    method: "GET",
+    url: '',
+    data: {},
+    ...options
+  }).then(res => res.data)
 }
