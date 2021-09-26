@@ -1,16 +1,16 @@
-// rem适配
-(function (doc, win) {
-  const docEl = doc.documentElement
-  const metaEl = doc.querySelector('meta[name="viewport"]')
-  const dpr = win.devicePixelRatio || 1
-  let rem = 100 * (docEl.clientWidth * dpr / 750) // 这样子的话，就需要我们使用的值和设计稿物理像素一致
-  rem > 200 && (rem = 200)
-  var scale = 1 / dpr
-  // 设置viewport，进行缩放，达到高清效果
-  metaEl.setAttribute('content', 'width=' + dpr * docEl.clientWidth + ',initial-scale=' + scale + ',maximum-scale=' + scale + ', minimum-scale=' + scale + ',user-scalable=no')
-  docEl.setAttribute('data-dpr', dpr) // 设置data-dpr属性，留作的css hack之用，解决图片模糊问题和1px细线问题
-  docEl.style.fontSize = rem + 'px' // 动态写入样式
-})(document, window)
+// rem适配版本一
+// (function (doc, win) {
+//   const docEl = doc.documentElement
+//   const metaEl = doc.querySelector('meta[name="viewport"]')
+//   const dpr = win.devicePixelRatio || 1
+//   let rem = 100 * (docEl.clientWidth * dpr / 750) // 这样子的话，就需要我们使用的值和设计稿物理像素一致
+//   rem > 200 && (rem = 200)
+//   var scale = 1 / dpr
+//   // 设置viewport，进行缩放，达到高清效果
+//   metaEl.setAttribute('content', 'width=' + dpr * docEl.clientWidth + ',initial-scale=' + scale + ',maximum-scale=' + scale + ', minimum-scale=' + scale + ',user-scalable=no')
+//   docEl.setAttribute('data-dpr', dpr) // 设置data-dpr属性，留作的css hack之用，解决图片模糊问题和1px细线问题
+//   docEl.style.fontSize = rem + 'px' // 动态写入样式
+// })(document, window)
 
 
 // rem适配版本二
@@ -35,6 +35,52 @@
 // })()
 
 
+
+/***** rem适配版本三******/
+// 第一个参数是设计稿尺寸。UI给出的设计稿是750那么前面就设置为750. 第二个参数是实际真机的最大支持尺寸。也就是宽度750时基准rem已经最大
+(function (designWidth, maxWidth) {
+  var doc = document,
+    win = window,
+    docEl = doc.documentElement,
+    remStyle = document.createElement("style"),
+    tid;
+  function refreshRem() {
+    var width = docEl.getBoundingClientRect().width;
+    maxWidth = maxWidth || 540;
+    width > maxWidth && (width = maxWidth);
+    var rem = width * 100 / designWidth;
+    remStyle.innerHTML = 'html{font-size:' + rem + 'px;}';
+  }
+  if (docEl.firstElementChild) {
+    docEl.firstElementChild.appendChild(remStyle);
+  } else {
+    var wrap = doc.createElement("div");
+    wrap.appendChild(remStyle);
+    doc.write(wrap.innerHTML);
+    wrap = null;
+  }
+  //要等 wiewport 设置好后才能执行 refreshRem，不然 refreshRem 会执行2次；
+  refreshRem();
+  win.addEventListener("resize", function () {
+    clearTimeout(tid); //防止执行两次
+    tid = setTimeout(refreshRem, 300);
+  }, false);
+  win.addEventListener("pageshow", function (e) {
+    if (e.persisted) { // 浏览器后退的时候重新计算
+      clearTimeout(tid);
+      tid = setTimeout(refreshRem, 300);
+    }
+  }, false);
+  if (doc.readyState === "complete") {
+    doc.body.style.fontSize = "16px";
+  } else {
+    doc.addEventListener("DOMContentLoaded", function (e) {
+      doc.body.style.fontSize = "16px";
+    }, false);
+  }
+})(750, 750);
+
+
 /**检查浏览器是否是手机微信浏览器 */
 (function (){
   var useragent = navigator.userAgent
@@ -45,7 +91,7 @@
 
 
 // 移动端真机调试核心代码
-// 1、安装  npm install vconsole
+// 1、安装  cnpm install vconsole
 // 然后在main.js中执行
 import VConsole from 'vconsole'
 let showVConsoleTimer = null
