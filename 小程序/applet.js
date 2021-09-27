@@ -118,10 +118,12 @@ export const hideLoading = function (time = 0) {
   setTimeout(() => { wx.hideLoading() }, time)
 }
 // 显示提示弹框
-export const showToast = (title, duration = 3000, icon='none') => {
+export const showToast = (title, delay = 0, duration = 3000, icon='none') => {
   if(title) {
-    wx.showToast({ title, icon, duration})
-    setTimeout(() => wx.hideToast(),duration)
+    setTimeout(() => {
+      wx.showToast({ title: String(title), icon, duration})
+      setTimeout(() => wx.hideToast(),duration)
+    }, delay)
   }
 }
 // 页面跳转
