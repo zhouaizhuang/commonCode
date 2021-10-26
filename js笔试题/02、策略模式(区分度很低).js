@@ -8,19 +8,18 @@
  * 绩效为其他值，或者不存在，则没有年终奖
  * 举例
  * const arr = [
- *  {id:'1', name:'张三', level: 'B', salary: 8000, yearEndBonus: 0, age: 25, city: '南京'},
- *  {id:'5', name:'李四', level: 'S', salary: 10000, yearEndBonus: 0, age: 29, city: '常州'},
- *  {id:'6', name:'王五', level: 'A', salary: 12000, yearEndBonus: 0, age: 35, city: '无锡'},
- *  {id:'6', name:'王五', level: '', salary: 12000, yearEndBonus: 0, age: 35, city: '无锡'},
+ *  {id:'1', name:'张三', level: 'B', salary: 8000, yearEndBonus: 0},
+ *  {id:'5', name:'李四', level: 'S', salary: 10000, yearEndBonus: 0},
+ *  {id:'6', name:'王五', level: 'A', salary: 12000, yearEndBonus: 0},
+ *  {id:'6', name:'赵七', level: '', salary: 12000, yearEndBonus: 0},
  * ]
- * 执行： computeMoney(arr)
- * 返回值： const arr = [
- *  {id:'1', name:'张三', level: 'B', salary: 8000, yearEndBonus: 8000, age: 25, city: '南京'},
- *  {id:'5', name:'李四', level: 'S', salary: 10000, yearEndBonus: 40000, age: 29, city: '常州'},
- *  {id:'6', name:'王五', level: 'A', salary: 12000, yearEndBonus: 24000, age: 35, city: '无锡'},
- *  {id:'6', name:'王五', level: '', salary: 12000, yearEndBonus: 0, age: 35, city: '无锡'},
+ * 执行 ---->  computeMoney(arr)
+ * 预期返回结果：[
+ *  {id:'1', name:'张三', level: 'B', salary: 8000, yearEndBonus: 8000},
+ *  {id:'5', name:'李四', level: 'S', salary: 10000, yearEndBonus: 40000},
+ *  {id:'6', name:'王五', level: 'A', salary: 12000, yearEndBonus: 24000},
+ *  {id:'6', name:'赵七', level: '', salary: 12000, yearEndBonus: 0},
  * ]
- * 
  * @param {Array} arr 
  * @returns {Array} 
 */

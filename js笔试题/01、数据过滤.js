@@ -6,7 +6,8 @@
    *  {id:'5', name:'李四', age: 32, city: '常州'},
    *  {id:'6', name:'王五', age: 35, city: '无锡'},
    * ]
-   * console.log(getAgeGt30(arr)) // '5,6'
+   * 执行----->   getAgeGt30(arr)
+   * 预期返回结果： '5,6'
    * @param {Array} arr 
    * @returns {String}
    */

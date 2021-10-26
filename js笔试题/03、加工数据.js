@@ -10,7 +10,7 @@
    *  {id:'6', name:'', firstName: '茅  ', secondName: '十 八 '},
    * ]
    * 执行-----> connectName(arr)
-   * 返回结果：[
+   * 预期返回结果：[
    *  {id:'1', name:'王大锤', firstName: '王 ', secondName: '大锤  '},
    *  {id:'5', name:'陈咬金', firstName: ' 陈', secondName: ' 咬 金'},
    *  {id:'6', name:'茅十八', firstName: '茅  ', secondName: '十 八 '},
