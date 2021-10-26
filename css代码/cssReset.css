@@ -1,5 +1,8 @@
-/* css重置代码 */
-html { background-color: #EDEDED;}
+/*
+* css重置代码
+* touch-action: manipulation;用于解决300ms点击延时问题
+**/
+html { background-color: #EDEDED; touch-action: manipulation;} 
 body { /* IOS禁止微信调整字体大小 */
   -webkit-text-size-adjust: 100% !important;
   text-size-adjust: 100% !important;

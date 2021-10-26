@@ -43,7 +43,7 @@
 /* 文字过多自动换行 */
 .wrap{max-width:100%;word-break:break-all;word-wrap:break-word;}
 /* 对齐方式*/
-.tl{text-align: left;} .tc{text-align: center;} .tr{text-align: right;}
+.tl{text-align: left;} .tc{text-align: center;} .tr{text-align: right;} .tj{text-align: justify;}
 /* 文字间距 */
 .lt5r{letter-spacing: 0.05rem;}
 /* 字体大小 */
