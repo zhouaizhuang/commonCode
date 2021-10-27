@@ -45,10 +45,9 @@ function getList(){
 
 
 // 中级工程师代码水准
-// 评价：
 // 优点：增加了部分数据的默认值处理。使用es6精简了代码。
 // 缺点：没有使用同步代码，异常处理没做、用于线上环境的话代码可靠性仍然不佳。
-// 在后台返回的数据存在一定瑕疵的情况下代码依旧能完美运行
+// 评价：做了一定程度的优化，但是异常处理没做，线上代码出问题难以排查
 function getList(){
   this.spinning = true // 显示loading
   post('/userInfo/list').then(res => { // post请求请求到数据。
@@ -67,10 +66,9 @@ function getList(){
 
 
 // 高级工程师代码水准
-// 评价：
 // 优点：es6精简了代码能使用同步加载代码试下、对数据可能出现的异常进行了默认值处理、同时增加了异常处理函数
 // 缺点：没有明显缺点
-// 在后台返回的数据存在一定瑕疵的情况下代码依旧能完美运行
+// 评价：在后台返回的数据存在一定瑕疵的情况下代码依旧能完美运行
 async function getList(){
   try {
     this.spinning = true // 显示loading
@@ -79,7 +77,7 @@ async function getList(){
     this.list = (list || []).map((item, index) => ({ ...item, num: index + 1 }))
     this.spinning = false // 关闭loading
   } catch(e) {
-    console.log(e)
+    showToast(e)
   }
 }
 
