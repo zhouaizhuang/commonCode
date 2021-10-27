@@ -59,7 +59,7 @@ function getMsg (state) {
 
 
 
-// 初中级
+// 初级工程师水准
 function getMsg (state) {
   let msg = ''
   if(state == 0) {
@@ -77,13 +77,14 @@ function getMsg (state) {
   }
   return msg
 }
-// 高级
 // 版本一
+// 中高级工程师水准
 // 评价：这个方法挺好，但是局限性就是必须保证以后state也必须是数字1或者能转成数字的字符串
 function getMsg(state){
   return ['活动已结束', '活动尚未开始', '活动参与人数已满', '活动奖品已经发放', '谢谢参与', '您并没有报名'][state] || ''
 }
 // 版本二
+// 中高级工程师水准
 // 评价：次方法，能保证字符串、非数字也能兼容
 function getMsg (state) {
   const mapStr = {
