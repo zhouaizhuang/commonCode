@@ -1,6 +1,0 @@
-{
-  "usingComponents":{
-    "painter":"../../_components/painter/painter"
-  },
-  "navigationBarTitleText": "生成海报"
-}
