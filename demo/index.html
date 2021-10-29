@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style src="./index.css"></style>
+  <title>Document</title>
+  <style>
+    #wrapper {
+      width: 184px;
+      height: 325px;
+      background-image: url('test.jpg');
+      background-size: 800% 100%; 
+      background-repeat: no-repeat;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="wrapper"></div>
+  </div>
+<script src="./vue.js"></script>
+<script>
+  // var app = new Vue({
+  //   el: '#app',
+  //   data: {
+  //     message: 'Hello Vue!'
+  //   }
+  // })
+
+  var domEl = document.querySelector('#wrapper');
+  var n = 0; // n：显示雪碧图中第几张图片，n >=0 && n<100
+  setInterval(() => {
+    if(n < 8) {
+      domEl.style.backgroundPosition = `${-n*184}px 0px`; // 注意这里是负值
+      n++
+    } else {
+      n = 0
+    }
+  }, 50)
+
+
+class Mypromise {
+  status = 'pending'
+  result = null
+  resolveArr = []
+  rejectedArr = []
+  constructor(executor) {
+    try{
+      executor(this.resolve.bind(this), this.reject.bind(this))
+    }catch(e) {
+      reject(e)
+    }
+  }
+  resolve(val) {
+    if(val instanceof Mypromise) { return val.then(resolve, reject) }
+    if(this.status !== 'pending') { return }
+    this.status = 'fulfilled'
+    this.result = val
+    while(this.resolveArr.length) {
+      this.resolveArr.shift()(val)
+    }
+  }
+  reject (err) {
+    if(err instanceof Mypromise) { return err.then(resolve, reject) }
+    if(this.status !== 'pending') { return }
+    this.status = 'reject'
+    this.result = err
+    while(this.rejectedArr.length) {
+      this.rejectedArr.shift()(err)
+    }
+  }
+  then(onResolve, onRejected) {
+    onResolve = typeof onResolve === 'function' ? onResolve : v => v
+    onRejected = typeof onRejected === 'function' ? onRejected : v => v
+    if(this.status === 'fulfilled') {
+      return new Mypromise((resolve, reject) => resolvePromise(onResolve(this.result), resolve, reject))
+    } else if(this.status === 'reject') {
+      return new Mypromise((resolve, reject) => onRejected(this.result))
+    }else if(this.status === 'pending') {
+      return new Mypromise((resolve, reject) => {
+        this.resolveArr.push(() => resolvePromise(onResolve(this.result), resolve, reject))
+        this.rejectedArr.push(() => resolvePromise(onRejected(this.result), resolve, reject))
+      })
+    }
+  }
+  catch(onReject){
+    return this.then(null, onReject)
+  }
+  finally(callBack){
+    return this.then(callBack, callBack)
+  }
+}
+function resolvePromise(retValue,resolve,reject){
+  if(retValue instanceof Mypromise) { //resolve或reject传入promise实例
+    retValue.status === 'pending' ? retValue.then(ret=>resolvePromise(ret,resolve,reject), error=>reject(error)) : retValue.then(resolve,reject)
+  }else{
+    resolve(retValue)
+  }
+}
+// 测试代码
+var p = new Mypromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(2)
+  }, 2000)
+})
+p.then(res => {
+  console.log(res + '=======')
+  return 3
+}).then(res => {
+  console.log(res + '------')
+})
+
+
+  
+</script>
+</body>
+</html>

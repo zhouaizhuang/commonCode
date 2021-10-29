@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- 虚拟DOM如何被渲染函数（h函数）产生？ -->
+  <!-- diff算法原理 -->
+  <!-- 虚拟DOM如何通过diff算法变为真正的DOM -->
+
+<script>
+  var old = {
+    "sel": 'div',
+    "data": {
+      "class": {"box": true}
+    },
+    "children": [
+      {
+        "sel": "h3",
+        "text": "我是一个标题"
+      },
+      {
+        "sel": "ul",
+        "data": {},
+        "children": [
+          {"sel": "li", "text": "牛奶"},
+          {"sel": "li", "text": "咖啡"},
+          {"sel": "li", "text": "可乐"},
+        ]
+      }
+    ]
+  }
+  var newObj = {
+    "sel": 'div',
+    "data": {
+      "class": {"box": true}
+    },
+    "children": [
+      {
+        "sel": "h3",
+        "text": "我是一个标题"
+      },
+      {
+        "sel": "span",
+        "text": "我是一个新的span"
+      },
+      {
+        "sel": "ul",
+        "data": {},
+        "children": [
+          {"sel": "li", "text": "牛奶"},
+          {"sel": "li", "text": "咖啡"},
+          {"sel": "li", "text": "雪碧"},
+        ]
+      }
+    ]
+  } 
+  var newObj1 = {
+    "sel": 'div',
+    "data": {
+      "class": {"box": true}
+    },
+    "children": [
+      {
+        "sel": "h3",
+        "text": "我是一个标题"
+      },
+      {
+        "sel": "span",
+        "text": "我是一个新的span"
+      },
+      {
+        "sel": "ul",
+        "data": {},
+        "children": [
+          {"sel": "li", "text": "牛奶"},
+          {"sel": "li", "text": "咖啡"},
+          {"sel": "li", "text": "雪碧"},
+        ]
+      }
+    ]
+  } 
+
+  // {children: undefined, data: {}, elm: undefined, key: undefined, sel: "div", text: "我是一个盒子"}
+  h('a', {props: { href: 'https://www.atguigu.com' }}, "尚硅谷")  // 虚拟结点的产生 vNode
+  // ====>
+  var vNode = {"sel": "a", "data": { props: {href: "http://www.atguigu.com"}}, "text": "尚硅谷"}  //得到这样的虚拟结点
+  // =====>
+  // <a href="http://www.atguigu.com"></a>  // 表示真正的DOM结点
+  
+
+  // h函数嵌套
+  h('ul', {}, [
+    h('li', {}, '牛奶'),
+    h('li', {}, '咖啡'),
+    h('li', {}, '可乐'),
+  ])
+
+
+
+
+
+
+  
+
+
+
+</script>
+</body>
+</html>
