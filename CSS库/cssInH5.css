@@ -1,6 +1,15 @@
 /** html5移动端，通用css样式库
 * 以下所有样式根据需要可自行扩展，只允许编写常用样式在此文件中。样式名必须简洁，否则class容易出现代码膨胀
 */
+/* 重置button所有默认属性 */
+button { all: unset; }
+/*取消300ms点击延时*/
+html{touch-action: manipulation;}
+/*安全边界*/
+.safePt{padding-bottom: env(safe-area-inset-top);} /*安全的上边界*/
+.safepr{padding-bottom: env(safe-area-inset-right);} /*安全的右边界*/
+.safePb{padding-bottom: env(safe-area-inset-bottom);} /*安全的下边界*/
+.safePl{padding-bottom: env(safe-area-inset-left);} /*安全的左边界*/
 /* 显示与隐藏 */
 .dn{display:none;}  .di{display:inline;}.db{display:block;} .dib{display:inline-block;}
 .hidden{position: absolute; visibility: hidden;} .show{position: static; visibility:visible;}
@@ -59,7 +68,7 @@
 /*flex弹性布局*/
 .f{display:flex;}
 /* 显示方向和是否换行 */
-.rn{flex-flow: row nowrap;} .rw{flex-flow: row wrap;}
+.rn{flex-flow: row nowrap;} .rw{flex-flow: row wrap;} .cn{flex-flow: column nowrap;} .cw{flex-flow: column wrap;}
 /* 水平对齐方式 */
 .xs{justify-content:flex-start;} .xc{justify-content:center;}.xe{justify-content:flex-end;}.xb{justify-content:space-between;}.xa{justify-content:space-around;}
 /* 垂直对齐方式 */
