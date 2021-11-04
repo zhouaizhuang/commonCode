@@ -61,13 +61,13 @@ html{touch-action: manipulation;}
 .ovh{overflow:hidden;} .ovyh{overflow-y:hidden;}  .ova{overflow: auto;} .ovxa{overflow-x:auto;} .ovya{overflow-y: auto;}
 /* 取消滚动锚定(当滚动区域内增加内容时，默认行为是定位到用户看到的文字位置。这里可以优先显示增加的内容) */
 .ovan{overflow-anchor:none;}
-/* 平滑滚动 */
+/* 平滑滚动《CSS新世界P509》*/
 .smooth{scroll-behavior: smooth;}
-/*阻止滚动传递*/
+/*阻止滚动传递《CSS新世界P510》*/
 .ovsb-contain{overscroll-behavior:contain;} .ovsb-none{overscroll-behavior:none;}
-/*滚动停止后x轴强制定位、y轴强制定位*/
+/*滚动停止后x轴强制定位、y轴强制定位《CSS新世界P513》*/
 .sstxm{scroll-snap-type:x mandatory;} .sstym{scroll-snap-type:y mandatory;}
-/*滚动停止后定位基准*/
+/*滚动停止后定位基准《CSS新世界P513》*/
 .ssas{scroll-snap-align:start;} .ssac{scroll-snap-align:center;} .ssae{scroll-snap-align:end;}
 /* 溢出隐藏 */
 .nowrap{min-width: 0;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
