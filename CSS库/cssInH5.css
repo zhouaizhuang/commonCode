@@ -129,6 +129,10 @@ html{touch-action: manipulation;}
 .tx-50{transform:translateX(-50%);}
 .ty-50{transform: translateY(-50%);}
 .txy-50{transform: translate(-50%, -50%);}
+/* 动画性能增强《CSS新世界P534》 */
+.willl-change-parent:hover .will-change{ will-change: transform; } .will-change{transition: transform 0.3s;} .will-change:hover{transform:scale(1.5);}
+/*CSS渲染增强《CSS新世界P539》 */
+.contain-strict{contain:strict;} .contain-content{contain:content;}
 /* 按钮禁用 */
 .disable{opacity:0.5; pointer-events:none;}
 .disable:hover{cursor:no-drop;}
