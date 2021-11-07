@@ -17,3 +17,16 @@ function convertData(){
 }
 
 
+
+
+// 事例2
+var Person = function (name, work){
+  var _person = new Human()
+  _person.name = new Named(name)
+  _person.work = new Named(work)
+  return _person
+}
+var person = new Person('xiao ming', 'software engineer')
+console.log(person)
+
+
