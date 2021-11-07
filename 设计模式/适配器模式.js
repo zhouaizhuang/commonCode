@@ -1,3 +1,4 @@
+// 核心作用： 解决不同的sdk不兼容问题
 var googleMap = {
   show: function () {
     console.log('googleMap show!')
