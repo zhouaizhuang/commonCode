@@ -757,7 +757,7 @@ export const show = function (id =''){
 }
 /**
  * 删除DOM结点
- * @param id 需要删除的结点的id
+ * @param id 需要隐藏的结点的id
  * @举例 hide('z-loading')  // 隐藏id为z-loading的dom结点
  */
 export const hide = function (id =''){
