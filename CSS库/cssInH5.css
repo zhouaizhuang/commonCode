@@ -76,8 +76,16 @@ html{touch-action: manipulation;}
 .wrap{max-width:100%;word-break:break-all;word-wrap:break-word;}
 /* 对齐方式*/
 .tl{text-align: left;} .tc{text-align: center;} .tr{text-align: right;} .tj{text-align: justify;}
+/* 首行缩进 */
+.ti1{text-indent: 1em} .ti1-5{text-indent: 1.5em} .ti2{text-indent: 2em}
+/* 包裹性 */
+.wfc{width:-webkit-fit-content;width:-moz-fit-content;width: fit-content;} .hfc{height:-webkit-fit-content;height: fit-content;}
+.wmc{width:-webkit-min-content;width:-moz-min-content;width: min-content;}
+/* 文字过多自动换行 */
+.wrap{max-width:100%;word-break:break-all;word-wrap:break-word;}
+.lba{line-break: anywhere;} /*文字因为能断开的全部断开*/
 /* 文本修饰 */
-.tdo{text-decoration: overline;} .tdl{text-decoration: line-through;} .tdu{text-decoration: underline;} .tdb{text-decoration: blink;}
+.tdn{text-decoration: none;} .tdo{text-decoration: overline;} .tdl{text-decoration: line-through;} .tdu{text-decoration: underline;} .tdb{text-decoration: blink;}
 /* 文字间距 */
 .lt5r{letter-spacing: 0.05rem;}
 /*文本大小写全大写字母、全小写字母、首字母大写*/
