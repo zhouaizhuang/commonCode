@@ -13,13 +13,13 @@ document.onKeypress = function (e) {
   var keyCode = e.keyCode
   var command = ruy[commands[keyCode]]
   if(command){
-    command();
-    commandStack.push(command)
+    command(); // 执行命令
+    commandStack.push(command) // 将执行的命令保存到堆栈
   }
 }
-document.getElementById('repay').onclick = function (){
+document.getElementById('repay').onclick = function () { // 播放录像
   var command = null
-  while(command = commandStack.shift()){ command() }
+  while(command = commandStack.shift()){ command() } // 从堆栈中依次去除命令并执行
 }
 
 
