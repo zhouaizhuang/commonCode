@@ -202,9 +202,10 @@ export const shuffle = function (arr){
  * @测试 cachedComputed('abc') ---> 'absZZZ' 第二次调用就不需要计算了直接取值 cachedComputed('abc') ---> 'absZZZ'
  * */ 
 export const cached = function (fn) {
-  const cache = {}
+  const cache = Object.create(null)
   return function (str) {
-    return !cache[str] && (cache[str] = fn(str)), cache[str]
+    var hit = cache[str]
+    return hit || (cache[str] = fn(str))
   }
 }
 // 扩展对象
