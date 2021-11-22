@@ -149,7 +149,7 @@ input, textarea, img, video, object { width:100%; box-sizing: border-box;}
 .require::before{ content: '*';display: inline-block;margin-right: 0.04rem;line-height: 1;font-family: SimSun;font-size: 0.14rem;color: #ed4014}
 
 /* 1px单条线 */
-.setOnePx{
+/* .setOnePx{
   position: relative;
 }
 .setOnePx::after{
@@ -162,9 +162,9 @@ input, textarea, img, video, object { width:100%; box-sizing: border-box;}
   transform: scale(1, 0.5);
   top: 0;
   left: 0;
-}
+} */
 /* 1px边框 */
-.setBorderAll{
+/* .setBorderAll{
   position: relative;
 }
 .setBorderAll:after{
@@ -180,3 +180,7 @@ input, textarea, img, video, object { width:100%; box-sizing: border-box;}
   border: 1px solid #E5E5E5;
   border-radius: 4px;
 }
+.onePx{
+  border-bottom: 1px solid #eceef0;
+  box-shadow: 0 1px 1px #fff;
+} */
