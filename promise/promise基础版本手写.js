@@ -24,7 +24,7 @@ class BasicPromise {
       if(this.state === PENDING) {
         this.state = REJECTED
         this.reason = reason
-        this.onrejectedCllbacks && this.onrejectedCllbacks.forEach(onrejected => onrejected(value))
+        this.onrejectedCllbacks && this.onrejectedCllbacks.forEach(onrejected => onrejected(reason))
       }
     }
     try {
