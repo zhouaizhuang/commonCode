@@ -15,6 +15,7 @@ body { /* IOS禁止微信调整字体大小 */
 img {border:0; display:inline-block;} 
 input{-webkit-appearance:none;appearance:none;} /*解决ios输入框默认内阴影*/
 input, textarea, img, video, object { width:100%; box-sizing: border-box;}
+.smoothScroll{overflow: auto;-webkit-overflow-scrolling: touch;} /*解决ios滑动不流畅问题*/
 /*安全边界*/
 .safePt{padding-bottom: env(safe-area-inset-top);} /*安全的上边界*/
 .safepr{padding-bottom: env(safe-area-inset-right);} /*安全的右边界*/
