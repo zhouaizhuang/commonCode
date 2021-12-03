@@ -24,3 +24,11 @@ button, input, select, textarea{font-size:1rem;}
 img {border:0; display:inline-block;} 
 input{-webkit-appearance:none;appearance:none;} /*解决ios输入框默认内阴影*/
 input, textarea, img, video, object { width:100%; box-sizing: border-box;}
+
+/*媒体查询*/
+/* @media screen and (min-width: 320px) {html{font-size: 88px !important;}}
+@media screen and (min-width: 360px) {html{font-size: 100px !important;}}
+@media screen and (min-width: 400px) {html{font-size: 111px !important;}}
+@media screen and (min-width: 440px) {html{font-size: 122px !important;}}
+@media screen and (min-width: 480px) {html{font-size: 133px !important;}}
+@media screen and (min-width: 640px) {html{font-size: 177px !important;}} */
