@@ -1,3 +1,4 @@
+// import { post } from "../network/request"
 export const inBrowser = typeof window !== 'undefined'
 export const UA = inBrowser && window.navigator.userAgent.toLowerCase()
 export const isQianFan = () => UA && UA.match(/QianFan/i) == "QianFan" // 是否是微信
@@ -27,7 +28,12 @@ export const isWeChat = () => UA && UA.match(/MicroMessenger/i) == "micromesseng
       </div>
     </div>
  */
- export const wxInit = async function() {
+/**
+ * 备注：这里必须上线调试看效果，jsApiList中声明需要用到的api。openTagList中声明需要用到的标签
+ * 把debug开起来调试，线上调试。显示出ok就正常了
+ * @returns 
+ */
+export const wxInit = async function() {
   let weChatInit = false
   const url = window.location.href.split('#')[0]
   // 这个地方需要读取数据！！！需要开发
@@ -96,39 +102,3 @@ export const setWxShare = async function({ title = '', imgUrl = '', desc = '', l
     }
   }
 }
-
-
-
-
-
-/***********************跳转小程序************************** */
-/**
- * H5跳转小程序
- * @param {String} appletUrl 小程序页面路径
- * @param {String} ghId 小程序原始id
- * @param {String} dlUrl 小程序URL Scheme。在小程序后台工具那儿设置。根据复制app.json中配置的路径
- * @param {String} appletUrl 小程序页面路径
- * @param {String} url 公众号路径
- */
- export const goAppletPage = function ({appletUrl = '', ghId = '', dlUrl = '', url = '' } = {}){
-  if(isQianFan()){
-    goApplet(appletUrl, ghId)
-  } else if(client.is_weixin()){
-    window.location.href = dlUrl
-  } else {
-    window.location.href = url
-  }
-}
-/**
- * 千帆环境跳转小程序
- * @举例 goApplet('/pages/index/index', 'gh_5dedcbfae4e8') 
- */
- export const goApplet = function(wxpath, wxid = 'gh_5dedcbfae4e8') {
-  QFH5.jumpMiniProgram(wxid, wxpath, function (state, data) {
-    if (state == 1) {
-      // alert('跳转成功')
-      console.log('跳转成功')
-    }
-  })
-}
-/*************************************************** */
