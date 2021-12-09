@@ -6,6 +6,8 @@
 export const isType = type => val => type === Object.prototype.toString.call(val).slice(8, -1)
 export const isArray = isType('Array')
 export const isObject = isType('Object')
+export const isEmptyObj = val => isObject(val) && Object.keys(val).length // 是否是空对象
+export const isReference = val => isArray(val) || isObject(val)
 export const isNull = isType('Null')
 export const isUndefined = isType('Undefined')
 export const isFunction = isType('Function')
@@ -28,25 +30,20 @@ export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform ==
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 export const isPhantomJS = UA && /phantomjs/.test(UA)
 export const isFF = UA && UA.match(/firefox\/(\d+)/)
-export const isPhoneNum = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
-// 执行此函数，或导致函数执行阻塞在此处t毫秒
+export const isPhone = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
+// 执行此函数，可以做一个延时功能。在需要延时执行一段逻辑的时候可以使用
 // 举例子: await wait(500);   那么程序会在此处阻塞等待500ms
-export const wait = async function(t) {
-  return new Promise(resolve => setTimeout(() => resolve(), t))
-}
+export const wait = t => new Promise(resolve => setTimeout(() => resolve(), t))
 /**
  * 深拷贝
- * @param {*} obj 传入任意类型都可以做深拷贝 
+ * @param {*} obj 传入任意类型都可以做深拷贝
  * @returns 返回深拷贝的数据
  * @举例子 const obj = {name:'a', age:'18'};  deepCopy(obj) ----> {name:'a', age:'18'}
  */
 export const deepCopy = function (obj) {
-  if(!(isArray(obj) || isObject(obj))) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
+  if(!isReference(obj)) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
   let res = isArray(obj) ? [] : {}
-  return Object.keys(obj).reduce((prev, item) => {
-    prev[item] = (isArray(obj[item]) || isObject(obj[item])) ? deepCopy(obj[item]) : obj[item]
-    return prev
-  }, res)
+  return Object.keys(obj).reduce((prev, item) => (prev[item] = isReference(obj[item]) ? deepCopy(obj[item]) : obj[item], prev), res)
 }
 /**
  * 获取唯一ID。用于模板渲染的唯一key值
@@ -64,7 +61,7 @@ export const debounce = function (fn, wait=3e3) {
   }
 }
 // 函数节流
-export const throttling = function  (fn, wait=3e3) {
+export const throttling = function(fn, wait=3e3) {
   let timeout = null // 使用闭包，让每次调用时点击定时器状态不丢失
   let start = +new Date() // 记录第一次点击时的时间戳
   return function () {
@@ -89,21 +86,17 @@ export const scrollPos = (id = '', pos = 0) => document.getElementById(id).scrol
 // 获取cookie 示例：var og_third_app_token = og_getOgCookie('third_app_token')
 export const getCookie = function (name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
-  if (arr = document.cookie.match(reg)) {
-    return unescape(arr[2])
-  } else {
-    return null
-  }
+  return arr = document.cookie.match(reg) ? unescape(arr[2]) : null
 }
 /**
  * 选择器查询
  * @param {String} selector 
- * @returns 
- * 举例子： query('.lazyLoadClass') ---->  查出所有类名为.lazyLoadClass的集合并转成数组
+ * @returns 返回全部/单个dom
+ * 举例子: queryAll('.lazyLoadClass') ---->  查出所有类名为.lazyLoadClass的dom集合并转成数组
+ * 举例子: query('.lazyLoadClass') ---->  查出第一个类名为.lazyLoadClass的dom
  */
- export const query = function (selector) {
-  return Array.from(document.querySelectorAll(selector))
-}
+export const queryAll = selector => Array.from(document.querySelectorAll(selector))
+export const query = selector => document.querySelector(selector)
 // 本地存储
 export const getLocalStorage = name => JSON.parse(localStorage.getItem(name))
 export const setLocalStorage = (name, val) => localStorage.setItem(name, JSON.stringify(val))
@@ -165,9 +158,7 @@ export const trim =  (str = '') => String(str).replace(/(^\s*)|(\s*$)/g, '')
 // 固定裁剪几个字符之后显示省略号。举例：sliceStr('张三李四王五', 2) ----> "张三..."
 export const sliceStr = function (str, num) {
   str = String(str)
-  let newStr = str.substr(0, num)
-  str.length > num && (newStr += '...')
-  return newStr
+  return str.length > num ? str.substr(0, num) + '...' : str.substr(0, num)
 }
 // 字符串前置补0。举例: addZero('1', 2) ==> '01'
 export const addZero = (str = '', num = 2) => (Array(num+1).join('0') + str).slice(-num)
@@ -206,10 +197,9 @@ export const shuffle = function (arr){
  * @测试 cachedComputed('abc') ---> 'absZZZ' 第二次调用就不需要计算了直接取值 cachedComputed('abc') ---> 'absZZZ'
  * */ 
 export const cached = function (fn) {
-  const cache = Object.create(null)
+  const cache = {}
   return function (str) {
-    var hit = cache[str]
-    return hit || (cache[str] = fn(str))
+    return !cache[str] && (cache[str] = fn(str)), cache[str]
   }
 }
 // 扩展对象
@@ -397,13 +387,21 @@ export const formatJSON = function (obj) {
 export const checkJSON = function (obj) {
   return Object.keys(obj).find(item => !Boolean(obj[item])) || ''
 }
-// JSON转url
-// 举例子： JSON2url('../advise/index', { from: 'index', id_str:'1243' }) -----> '../advise/index?from=index&id_str=1243'
+/**
+ * JSON转url（这个函数将数据进行了编码。将来再解码使用。可以规避一些特殊字符产生的bug）
+ * 函数还兼容传入 {info: {name:'zz', age:18}, school: 'qinghua'} 这种复杂的数据。之后通过url2JSON可以完美解析
+ * @param {String} url 跳转地址的域名。在小程序中那就是路径
+ * @param {Object} params 跳转地址中药传递的参数的json格式
+ * @returns {String} 返回拼接好的带有参数的链接地址
+ * @举例子 JSON2url('../advise/index', { from: 'index', id_str:'1243' }) -----> '../advise/index?from=index&id_str=1243'
+ */
 export const JSON2url = function (url = '', params = {}){
-  return Object.keys(formatJSON(params)).reduce((prev, item) => prev + (prev.includes('?') ? '&' : '?') + `${item}=${encodeURIComponent(params[item])}`, url) || ''
+  return Object.keys(formatJSON(params)).reduce((prev, item) => prev + (prev.includes('?') ? '&' : '?') + `${item}=${encodeURIComponent(JSON.stringify(params[item]))}`, url) || ''
 }
 /**
- * url转JSON
+ * url转JSON(函数内与解码操作，与JSON2url相对应)
+ * @param {String} url 传入带有参数的url链接地址
+ * @returns {Object} 返回参数拼接的json对象
  * @举例 url2JSON('http://www.baidu.com?name=asd&age=12') ----> {name: "asd", age: "12"}
  */
 export const url2JSON = function (url = '') {
@@ -411,7 +409,7 @@ export const url2JSON = function (url = '') {
   paramsStr = paramsStr.split('#')[0] || '' // 防止一些url中混入#号放在?号之后，此处做一个适配
   return paramsStr.split('&').reduce((prev, item) => {
     const [key, val] = item.split('=')
-    return { ...prev, [key]: decodeURIComponent(val) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
+    return { ...prev, [key]: JSON.parse(decodeURIComponent(val)) } // 此处需要转码，否则中文和一些特殊字符就无法支持了
   }, {})
 }
 /**
@@ -736,7 +734,7 @@ export const afterNsecond = function (after = 60) {
  * @returns 
  * @举例子 getDays(2021, 11) ---> 30
  */
- export const getDays = function(whichYear, whichMonth) {
+export const getDays = function(whichYear, whichMonth) {
   let nextMoth = Number(whichMonth) + 1
   let nextYear = Number(whichYear)
   if (nextMoth === 13) {
@@ -761,7 +759,8 @@ export const afterNsecond = function (after = 60) {
  * @param {reg} reg 正则表达式
  * @returns {Boolean}
  */
- export const regTest = (val, reg) => new RegExp(reg).test(val)
+export const regTest = (val, reg) => new RegExp(reg).test(val)
+
 /*
 **********************************************************************************************
 ******************************************业务函数*********************************************
@@ -785,14 +784,22 @@ export const afterNsecond = function (after = 60) {
   setTimeout(() => document.body.removeChild(pObj), time);
 }
 /**
+ * 删除css结点
+ * @param id 需要删除的结点的id
+ * @举例 removeCss('z-loading-style')  // 删除id为z-loading-style的css结点
+ */
+export const removeCss = function (id = '') {
+  const selectDom = document.getElementById(id)
+  if(selectDom){ document.getElementsByTagName('head').item(0).removeChild(selectDom) } // 清除样式
+}
+/**
  * 往网页头部动态追加css
  * @param css 可以手动传入需要载入的样式
  * @param id 这个css的id，方便以后进行删除操作
  * @举例 addCss('@keyframes moveY {0%{transform: translateY(0%);}100%{transform: translateY(-100%);}}', 'z-loading-style')  // 载入移动动画样式
  */
 export const addCss = function (css = '', id = ""){
-  const selectDom = document.getElementById(id)
-  if(selectDom){ document.getElementsByTagName('head').item(0).removeChild(selectDom) } // 清除样式
+  removeCss(id) // 删除上次添加的这个id的CSS
   var styleObj = document.createElement('style')
   styleObj.id = id
   styleObj.innerHTML= css
@@ -800,13 +807,13 @@ export const addCss = function (css = '', id = ""){
   // document.head.append(styleObj)
 }
 /**
- * 删除css结点
+ * 删除DOM结点
  * @param id 需要删除的结点的id
- * @举例 removeCss('z-loading-style')  // 删除id为z-loading-style的css结点
+ * @举例 removeDom('z-loading')  // 删除id为z-loading的dom
  */
- export const removeCss = function (id = '') {
+export const removeDom = function (id = '') {
   const selectDom = document.getElementById(id)
-  if(selectDom){ document.getElementsByTagName('head').item(0).removeChild(selectDom) } // 清除样式
+  if(selectDom){ document.body.removeChild(selectDom) } // 清除DOM
 }
 /**
  * 往网页头部动态追加Dom
@@ -815,21 +822,11 @@ export const addCss = function (css = '', id = ""){
  * @举例 addDom('<div>234324</div>', 'z-loading')  // 载入的dom
  */
  export const addDom = function (dom = '', id = ""){
-  const selectDom = document.getElementById(id)
-  if(selectDom){ document.body.removeChild(selectDom) } // 清除DOM
+  removeDom(id) // 删除上次添加的这个id的DOM
   var divObj = document.createElement("div")
   divObj.id = id
   divObj.innerHTML = dom
   document.body.appendChild(divObj) // 添加Dom节点到body中
-}
-/**
- * 删除DOM结点
- * @param id 需要删除的结点的id
- * @举例 removeDom('z-loading')  // 删除id为z-loading的dom
- */
-export const removeDom = function (id = ''){
-  const selectDom = document.getElementById(id)
-  if(selectDom){ document.body.removeChild(selectDom) } // 清除DOM
 }
 /**
  * 显示DOM
@@ -899,13 +896,13 @@ export const hideLoading = function(){
  * @param title 网页标题
  * @举例 setTitle('订餐管理系统')  // 设置首页标题为“订餐管理系统”
  */
- export const setTitle = title => document.title = title
+export const setTitle = title => document.title = title
  /**
   * 跳转
   * @param href 链接地址
   * @举例 goUrl('https://www.baidu.com')  // 跳转到百度
   */
- export const goUrl = href => window.location.href = href
+export const goUrl = href => window.location.href = href
 
 /**
  * 数据结构
@@ -925,7 +922,7 @@ export const hideLoading = function(){
  * @param map map对象
  * @举例 map2Obj(new Map([[1, 'one'], [2, 'two']]))  // {1: 'one', 2: 'two'}
  */
- export const map2Obj = function (map){
+export const map2Obj = function (map){
   let obj = Object.create(null)
   for(let [k, v] of map) { obj[k] = v }
   return obj
