@@ -110,4 +110,4 @@ input, textarea, img, video, object { width:100%; box-sizing: border-box;}
 /* 边框圆角 */
 .rds1{border-radius:1px;}   .rds2{border-radius:2px;}  .rds5{border-radius:5px;}    .rds10{border-radius:10px;}  .rds15{border-radius:15px;}  .rds20{border-radius:20px;}  .rds30{border-radius:30px;} .rds40{border-radius:40px;}  .rds50{border-radius:50%;}
 /* 表单必填*号 */
-.require::before{ content: '*';display: inline-block;margin-right: 4px;line-height: 1;font-family: SimSun;font-size: 14px;color: #ed4014}
+.require::before{ content: '*';display: inline-block;margin-right: 0.04rem;line-height: 1;font-family: SimSun;font-size: 0.35rem;transform:translateY(0.1rem);color: #ed4014}
