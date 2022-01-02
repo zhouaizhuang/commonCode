@@ -113,12 +113,10 @@ function goNetworkErr(href = '', time = 8e3){
   })
 }
 // 假定正常项目封装的axios请求的方法为get
-function raceRequest(){
-  return Promise.race([get('/list', {page:2}), goNetworkErr('www.baidu.com')])
+function raceRequest(fn){
+  return Promise.race([fn(), goNetworkErr('https://www.baidu.com')])
 }
-
-
-
-
-
+const [data] = await raceRequest(() => {
+  get('/list', {page:2})
+})
 
