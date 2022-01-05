@@ -1,3 +1,4 @@
+// 备注：轻量级的表单校验库 https://github.com/validatorjs/validator.js
 // 校验必填
 const isRequire = function (val, msg) {
   if(!val) { return msg }
