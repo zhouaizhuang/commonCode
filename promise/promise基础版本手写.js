@@ -44,7 +44,6 @@
 //   }
 // }
 
-
 // // 测试
 // const p = new BasicPromise((resolve, reject) => {
 //   setTimeout(() => {
@@ -58,12 +57,9 @@
 //   console.log('value2', res)
 // })
 
-
-
-
 function MyPromise(fn) {
   this.cbs = []
-  const resolve = (res) => {
+  const resolve = res => {
     setTimeout(() => {
       this.cbs.forEach(cb => cb(res))
     }, 0)
@@ -71,8 +67,8 @@ function MyPromise(fn) {
   fn(resolve)
 }
 MyPromise.prototype.then = function (onResolved) {
-  return new MyPromise((resolve) => {
-    this.cbs.push((res) => {
+  return new MyPromise(resolve => {
+    this.cbs.push(res => {
       const result = onResolved(res)
       if (result instanceof MyPromise) {
         result.then(resolve)
