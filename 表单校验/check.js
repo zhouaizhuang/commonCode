@@ -1,24 +1,12 @@
 // 备注：轻量级的表单校验库 https://github.com/validatorjs/validator.js
 // 校验必填
-const isRequire = function (val, msg) {
-  if(!val) { return msg }
-}
-// 校验手机
-const isPhone = function (val, msg) {
-  if(!/^1[3456789]\d{9}$/.test(val)) { return msg }
-}
-// 字符串最小长度
-const minLength = function (val, len, msg) {
-  if(val.length < len) { return msg }
-}
-// 字符串最大长度
-const maxLength = function (val, len, msg) {
-  if(val.length > len) { return msg }
-}
 const check = {
-  isRequire, isPhone, minLength, maxLength
+  isRequire: (val, msg) => val ? '' : msg, // 必填项是否填写了
+  isPhone: (val, msg) => /^1[3456789]\d{9}$/.test(val) ? '' : msg, // 是否是合法的手机号码
+  minLength: (val, len, msg) => val.length > len ? '' : msg, // 字符串最小长度
+  maxLength: (val, len, msg) => val.length < len ? '' : msg, // 字符串最大长度
+  isIdentity: (val, msg) => /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(val) ? '' : msg, // 是否是合法的身份证
 }
-
 // 表单校验实例
 export const Validator = function () {
   this.cache = [] // 保存校验规则
