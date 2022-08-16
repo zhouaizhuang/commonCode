@@ -27,40 +27,113 @@ export const isIE9 = UA && UA.indexOf('msie 9.0') > 0
 export const isEdge = UA && UA.indexOf('edge/') > 0
 export const isAndroid = (UA && UA.indexOf('android') > 0) || (weexPlatform === 'android')
 export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || (weexPlatform === 'ios')
+export const isWeChat = (UA && (/MicroMessenger/i).test(UA))
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
 export const isPhantomJS = UA && /phantomjs/.test(UA)
 export const isFF = UA && UA.match(/firefox\/(\d+)/)
 export const isPhone = val => /^1[3456789]\d{9}$/.test(val) // 检测是否是手机号码
-// 执行此函数，可以做一个延时功能。在需要延时执行一段逻辑的时候可以使用
-// 举例子: await wait(500);   那么程序会在此处阻塞等待500ms
-export const wait = t => new Promise(resolve => setTimeout(() => resolve(), t))
+export const isIdentity = val => /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/.test(val) // 身份证 321281155121152489
+export const isEmail = val => /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(val)
+/*
+**********************************************************************************************
+******************************************业务函数*********************************************
+**********************************************************************************************
+*/
+/**
+ * 异步加载js
+ * @param {String} url 需要加载的js
+ * @举例子 在async函数中调用 await loadJs("//res.wx.qq.com/open/js/jweixin-1.6.0.js") 
+ */
+export const loadJs = (function() {
+  let loadedJs = []
+  return function (url){
+    return new Promise((resolve, reject) => {
+      if(loadedJs.includes(url)) { return resolve() }
+      let script = document.createElement("script")
+      script.type = "text/javascript"
+      script.src = url
+      document.body.appendChild(script)
+      script.onload = () => { loadedJs.push(url);resolve(); }
+      script.onerror = () => reject()
+    })
+  }
+})()
+/**
+ * 异步加载css
+ * @param {String} href 需要加载的css
+ * @举例子 在async函数中调用 await loadCss("") 
+ */
+export const loadCss = (function(href) {
+  let loadedCss = []
+  return function (){
+    return new Promise((resolve, reject) => {
+      if(loadedCss.includes(href)) { return resolve() }
+      let link = document.createElement('link')
+      link.setAttribute('rel', 'stylesheet')
+      link.href = href
+      document.head.appendChild(link)
+      link.onload = () => { loadedCss.push(href);resolve(); }
+      link.onerror = () => reject()
+    })
+  }
+})()
+/**
+ * 执行此函数，可以做一个延时功能。在需要延时执行一段逻辑的时候可以使用
+ * @param {String|Number} t
+ * @returns 返回一个promise对象，等待t时间后resolve
+ * 举例子: await wait(500)   // 那么程序会在此处阻塞等待500ms
+ * 举例子: await wait('500ms') // 那么程序会在此处阻塞等待500ms
+ * 举例子: await wait('0.5s') // 那么程序会在此处阻塞等待500ms
+ */
+export const wait = function(t) {
+  if(isString(t)) { t = eval(t.replace('ms', '').replace('s', '*1000')) }
+  return new Promise(resolve => setTimeout(() => resolve(), Number(t)))
+}
 /**
  * 深拷贝
- * @param {*} obj 传入任意类型都可以做深拷贝
+ * @param {*} obj 传入任意类型都可以做深拷贝 
  * @returns 返回深拷贝的数据
- * @举例子 const obj = {name:'a', age:'18'};  deepCopy(obj) ----> {name:'a', age:'18'}
+ * @举例子
+ * const obj = {name:'a', age:'18'}; 
+ * deepCopy(obj) ----> {name:'a', age:'18'}
  */
 export const deepCopy = function (obj) {
   if(!isReference(obj)) { return obj }  // 数字、日期、正则、函数、字符串、undefined、null、Symbol直接返回
-  let res = isArray(obj) ? [] : {}
-  return Object.keys(obj).reduce((prev, item) => (prev[item] = isReference(obj[item]) ? deepCopy(obj[item]) : obj[item], prev), res)
+  return Object.keys(obj).reduce((prev, item) => (prev[item] = isReference(obj[item]) ? deepCopy(obj[item]) : obj[item], prev), isArray(obj) ? [] : {})
 }
 /**
  * 获取唯一ID。用于模板渲染的唯一key值
  * @returns 
- * @举例子 [{name:'a'}, {name:'b'}].map(v => ({...v, _id:guID()})) ---->  [{name:'a', _id: '1vc49wwugp3400'}, {name:'b', _id:'4vvfl6wivx4000'}]
+ * @举例
+ * [{name:'a'}, {name:'b'}].map(v => ({...v, _id: guID()}))
+ * ---->
+ * [{name:'a', _id: '1vc49wwugp3400'}, {name:'b', _id:'4vvfl6wivx4000'}]
  */
-export const guID = () => Number(Math.random().toString().substr(3, 8) + Date.now()).toString(36)
-// 函数防抖
+export const guID = () => Number(Math.random().toString().slice(3, 9) + Date.now()).toString(36)
+/**
+ * 函数防抖
+ * @param {*} fn 需要防抖的函数
+ * @param {*} wait 防抖时间
+ * @returns 
+ * @举例 const fn = () => {console.log(1)}
+ * @举例 const newFn = debounce(fn, 2e3) ----> 这样的话执行newFunc()就会有防抖效果
+ */
 export const debounce = function (fn, wait=3e3) {
-  if(!isFunction(fn)){throw new Error('传入的参数必须是个函数')}
+  if(!isFunction(fn)){ throw new Error('传入的参数必须是个函数') }
   let timeout = null  // 使用闭包，让每次调用时点击定时器状态不丢失
   return function () { 
     clearTimeout(timeout) // 如果用户在定时器（上一次操作）执行前再次点击，那么上一次操作将被取消
     timeout = setTimeout(()=> fn(...arguments), wait)
   }
 }
-// 函数节流
+/**
+ * 函数节流
+ * @param {*} fn  需要做节流的函数
+ * @param {*} wait 节流时间
+ * @returns 
+ * @举例 const fn = () => {console.log(1)}
+ * @举例 const newFn = throttling(fn, 2e3) ----> 生成了节流函数
+ */
 export const throttling = function(fn, wait=3e3) {
   let timeout = null // 使用闭包，让每次调用时点击定时器状态不丢失
   let start = +new Date() // 记录第一次点击时的时间戳
@@ -77,17 +150,22 @@ export const throttling = function(fn, wait=3e3) {
 }
 // 获取当前滚动距离顶部的距离
 export const getScrollTop = () => (document.documentElement && document.documentElement.scrollTop) || document.body.scrollTop
-// 滚动的盒子到某个位置
-// 注意，如果想让这个盒子能滚动到某个位置。首先这个盒子必须是可滚动的，也就是高度得固定的
-// 不限制高度的盒子，根本不存在滚动，你去设置这个盒子的滚动位置就是耍流氓
-// 比如设置个动态的height:100vh;，然后垂直滚动overflow-y: auto;这样才行的
-// 使用事例：scrollPos('taskBox', 0) // 将id为taskBox的盒子滚动到这个盒子的顶部
+/**
+ * 滚动的盒子到某个位置
+ * 注意，如果想让这个盒子能滚动到某个位置。首先这个盒子必须是可滚动的，也就是高度得固定的
+ * 比如设置个动态的height:100vh;，然后垂直滚动overflow-y: auto;这样才行的
+ * @param {*} id 需要获取的dom的id
+ * @param {*} pos 需要滚动到的目标位置
+ * @returns
+ */
 export const scrollPos = (id = '', pos = 0) => document.getElementById(id).scrollTop = pos
 // 获取cookie 示例：var og_third_app_token = og_getOgCookie('third_app_token')
 export const getCookie = function (name) {
   var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)")
   return arr = document.cookie.match(reg) ? unescape(arr[2]) : null
 }
+//  清除cookie
+export const clearCookies = () => document.cookie.split(';').forEach(cookie => document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`))
 /**
  * 选择器查询
  * @param {String} selector 
@@ -98,8 +176,12 @@ export const getCookie = function (name) {
 export const queryAll = selector => Array.from(document.querySelectorAll(selector))
 export const query = selector => document.querySelector(selector)
 // 本地存储
-export const getLocalStorage = name => JSON.parse(localStorage.getItem(name))
-export const setLocalStorage = (name, val) => localStorage.setItem(name, JSON.stringify(val))
+export const getLocalStorage = name => JSON.parse(window.localStorage.getItem(name))
+export const setLocalStorage = (name, val) => window.localStorage.setItem(name, JSON.stringify(val))
+export const removeLocalStorage = name => window.localStorage.removeItem(name)
+// 会话存储
+export const getSessionStorage = name => JSON.parse(sessionStorage.getItem(name))
+export const setSessionStorage = (name, val) => sessionStorage.setItem(name, JSON.stringify(val))
 // 获取操作系统类型
 export const getOS = function() {
   const userAgent = 'navigator' in window && 'userAgent' in navigator && navigator.userAgent.toLowerCase() || ''
@@ -116,31 +198,25 @@ export const getOS = function() {
 export const getPosition = function (e) {
   const offsety = Number(e.offsetTop)
   const offsetx = Number(e.offsetLeft)
-  if (e.offsetParent !== null) {
-    getPosition(e.offsetParent)
-  }
+  if (e.offsetParent !== null) { getPosition(e.offsetParent) }
   return { Left: offsetx, Top: offsety }
 }
 /**获取视口高度
  * @returns 
  */
- export const getViewHeight = () => document.body.clientHeight + 'px'
+export const getViewHeight = () => document.body.clientHeight + 'px'
 /**
  * 获取距离视口的数据
  * 距离视窗的距离。一般现在通过 IntersectionObserver API实现了，请看https://www.ruanyifeng.com/blog/2016/11/intersectionobserver_api.html
  * @param {*} e 
  * @returns 
  */
- export const getViewPos = function (e) {
-  var rect = e.getBoundingClientRect()
-  var top = document.documentElement.clientTop ? document.documentElement.clientTop : 0 // html元素对象的上边框的高度
-  var left = document.documentElement.clientLeft ? document.documentElement.clientLeft : 0
-  return {
-    top: rect.top - top,  // 元素距离视口顶部的距离
-    bottom: rect.bottom - top,  // 元素距离视口底部的距离
-    left: rect.left - left,  // 元素距离视口左边的距离
-    right: rect.right - left  // 元素距离视口右边的距离
-  }
+export const getViewPos = function (e) {
+  var {top, bottom, left, right} = e.getBoundingClientRect()
+  var htmlTop = document.documentElement.clientTop ? document.documentElement.clientTop : 0 // html元素对象的上边框的高度
+  var htmlLeft = document.documentElement.clientLeft ? document.documentElement.clientLeft : 0
+  // 元素距离视口顶部的距离、元素距离视口底部的距离、元素距离视口左边的距离、元素距离视口右边的距离
+  return { top: top - htmlTop, bottom: bottom - htmlTop, left: left - htmlLeft, right: right - htmlLeft }
 }
 /*
 **********************************************************************************************
@@ -152,47 +228,82 @@ export const getPosition = function (e) {
  * @param {String} keywords 需要搜索的开头的字符串
  * @returns {Boolean}
  */
- export const startWith = (str, startWords) => str.slice(0, startWords.length) === startWords
-// 去除字符串的首尾空格
-export const trim =  (str = '') => String(str).replace(/(^\s*)|(\s*$)/g, '')
-// 固定裁剪几个字符之后显示省略号。举例：sliceStr('张三李四王五', 2) ----> "张三..."
+export const startWith = (str, startWords) => str.slice(0, startWords.length) === startWords
+/**
+ * 去除字符串中的空格
+ * @param {String} str 需要去除空格的字符串
+ * @param {Number} type 去除空格的类型 ----> 1: 去除首尾空格   2：去除全部空格  3：去除头部空格  4：去除尾部空格
+ * @returns {String}
+ * @举例 trim(' ab c  ')  ---> 'ab c'
+ * @举例 trim(' ab c  ', 2)  ---> 'abc'
+ * @举例 trim(' ab c  ', 3)  ---> 'ab c  '
+ * @举例 trim(' ab c  ', 4)  ---> ' ab c'
+ */
+export const trim =  (str = '', type = 1) => {
+  str = String(str)
+  const mapStr = {
+    1: () => str.replace(/(^\s*)|(\s*$)/g, ""),
+    2: () => str.replace(/\s+/g, ""),
+    3: () => str.replace(/(^\s*)/g, ""),
+    4: () => str.replace(/(\s*$)/g, "")
+  }
+  return (mapStr[type] && mapStr[type]()) || str
+}
+/**
+ * 固定裁剪几个字符之后显示省略号
+ * @param {String} str 需要进行裁剪的字符串
+ * @param {Number} num 要裁剪几位数字
+ * @returns 
+ * @举例 sliceStr('张三李四王五', 2) ----> "张三..."
+ */
 export const sliceStr = function (str, num) {
   str = String(str)
-  return str.length > num ? str.substr(0, num) + '...' : str.substr(0, num)
+  return str.length > num ? str.slice(0, num) + '...' : str.slice(0, num)
 }
 // 字符串前置补0。举例: addZero('1', 2) ==> '01'
-export const addZero = (str = '', num = 2) => (Array(num+1).join('0') + str).slice(-num)
+export const addZero = (str = '', num = 2) => (Array(num+1).join('0') + String(str)).slice(-num)
 // 完美的统计字符串长度，能正确统计占四个字节的Unicode字符。举例：length('x\uD83D\uDE80y') ----> 3
 export const length = str => [...str].length
 // 字符串复制
 export const copyLink = function (e){
   // if(!e) { return this.$Message.error('链接地址为空') }
-  var input = document.createElement("input")   // js创建一个input输入框
-  input.value = e  // 将需要复制的文本赋值到创建的input输入框中
-  document.body.appendChild(input)    // 将输入框暂时创建到实例里面
-  input.select()   // 选中输入框中的内容
-  document.execCommand("Copy")   // 执行复制操作
+  var input = document.createElement("input") // js创建一个input输入框
+  input.value = e // 将需要复制的文本赋值到创建的input输入框中
+  document.body.appendChild(input) // 将输入框暂时创建到实例里面
+  input.select() // 选中输入框中的内容
+  document.execCommand("Copy") // 执行复制操作
   document.body.removeChild(input) // 最后删除实例中临时创建的input输入框，完成复制操作
   // return this.$Message.success('复制成功')
 }
+/**
+ * 字符串首字母大写
+ * @param {String} str 
+ * @举例 capitalize('abcd')  ---->  'Abcd'
+ * @returns 经过转换后的首字母为大写的字符串
+ */
+export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1)
 /*
 **********************************************************************************************
 ******************************************数组方法*********************************************
 **********************************************************************************************
 */
-/**洗牌算法**/
-// [1,2,3,4,5,6].sort(() => .5 - Math.random()) // 基础版本
+/**
+ * 洗牌算法
+ * @param {Array} arr 需要乱序的数组
+ * @returns {Array} 打乱顺序后的数组
+ * @举例 shuffle([1,2,3,4])  ---> 可能的结果：[2,4,1,3]
+ */
 export const shuffle = function (arr){
   if(!isArray(arr)) { arr = [arr] }
   let n = arr.length, random
-  while(0!=n){
-    random =  (Math.random() * n--) >>> 0; // 无符号右移位运算符向下取整
-    [arr[n], arr[random]] = [arr[random], arr[n]] // ES6的结构赋值实现变量互换
+  while(n != 0){
+    random =  (Math.random() * n--) >>> 0 // 无符号右移位运算符向下取整
+    ;[arr[n], arr[random]] = [arr[random], arr[n]] // ES6的结构赋值实现变量互换
   }
   return arr
 }
 /**
- *  缓存函数计算结果
+ * 缓存函数计算结果
  * @举例 const cachedComputed = cached(function(val){ return val + 'ZZZ' })
  * @测试 cachedComputed('abc') ---> 'absZZZ' 第二次调用就不需要计算了直接取值 cachedComputed('abc') ---> 'absZZZ'
  * */ 
@@ -202,24 +313,126 @@ export const cached = function (fn) {
     return !cache[str] && (cache[str] = fn(str)), cache[str]
   }
 }
-// 扩展对象
-// extend({}, {name:1}) ====> {name: 1}
+/**
+ * 扩展对象
+ * @param {Object} to 需要扩展的目标对象
+ * @param {Object} _from 从这个对象扩展
+ * @returns 扩展之后的对象
+ * @举例 extend({}, {name:1}) ----> {name: 1}
+ */
 export const extend = function(to, _from) {
-  for (var key in _from) {
-    to[key] = _from[key]
-  }
+  for(var key in _from) { to[key] = _from[key] }
   return to
 }
-// 对象数组转对象
-// toObject([{name: 1}, {age:2}]) ====> {name:1, age:2}
+/**
+ * 对象数组转对象
+ * @param {Array} arr 需要转换的数组
+ * @returns {Object} 转换之后的对象
+ * @举例 toObject([{name: 1}, {age:2}]) ----> { name:1, age:2 }
+ */
 export const toObject = function (arr) {
   var res = {}
-  for (var i = 0; i < arr.length; i++) {
-    if (arr[i]) {
-      extend(res, arr[i])
-    }
+  for(var i = 0; i < arr.length; i++) {
+    if (arr[i]) { extend(res, arr[i]) }
   }
   return res
+}
+/**
+ * 数组求和
+ * @param {Array} arr 需要求和的数组
+ * @returns {Number}
+ * @举例 sum([1,2,3,4,5]) ----> 15
+ */
+export const sum = arr => arr.reduce((prev, item) => prev + item, 0)
+/**
+ * 数组平均值
+ * @param {Array} arr 需要求均值的数组
+ * @returns {Number}
+ * @举例 mean([1,2,3,4,5]) ----->  3
+ */
+export const mean = arr => arr.reduce((prev, item) => prev + item, 0) / arr.length
+/**
+ * 指定索引变换
+ * @param {Array} arr 需要变换的数组
+ * @returns {Number}
+ * @举例 adjust([1,2,3,4,5], 2, item => 'zzz') ---> [1,2,'zzz',4,5]
+ * @举例 adjust([1,2,3,4,5], -1, item => item + 'zzz') ---> [1,2,3,4,'5zzz']
+ */
+export const adjust = function (arr, num, fn) {
+  if(num > arr.length) { return arr }
+  return arr.map((item, index) => {
+    if(num >= 0) { return index === num ? fn(item) : item } // 如果是正数，那么就正常的进行映射
+    return num + arr.length === index ? fn(item) : item // 如果是负数，比如-1，则对应修改最后一个元素
+  })
+}
+/**
+ * 找到数组中目标对象进行数据变更
+ * @param {Array} arr 需要操作的数据
+ * @param {Object|Function} search 需要查询的json对象 | 也可以传入校验函数
+ * @param {Function} sucFunc 成功匹配的处理函数--->接受一个item，返回一个新的item
+ * @param {Function} failFunc 失败匹配的处理函数---->接受一个item，返回一个新的item
+ * @举例 
+ * searchCover([
+ *    {id:1, name: 'aa', age:19},
+ *    {id:2, name: 'bb', age:20},
+ *    {id:3, name: 'cc', age:21}
+ *  ],
+ *  v => v.age < 21,
+ *  v => ({ ...v, name: 'ssss' })
+ *  v => ({ ...v, name: 'gggg' })
+ * )
+ * -------> 得到如下结果
+ * [{id: 1, name: 'ssss', age: 19}, {id: 2, name: 'ssss', age: 20}, {id: 3, name: 'gggg', age: 21}]
+ * @实战 处理单选逻辑
+ * searchCover([
+ *    {id:1, name: 'aa', age:19},
+ *    {id:2, name: 'bb', age:20},
+ *    {id:3, name: 'cc', age:21}
+ *  ],
+ *  {id: 20},
+ *  v => ({...v, isChecked: true}),
+ *  v => ({...v, isChecked: false})
+ * )
+ * @实战 处理多选逻辑
+ * searchCover([
+ *    {id:1, name: 'aa', age:19},
+ *    {id:2, name: 'bb', age:20},
+ *    {id:3, name: 'cc', age:21}
+ *  ],
+ *  v => v.age == 20,
+ *  v => ({...v, isChecked: !v.isChecked}),
+ * )
+ */
+export const searchCover = function (arr, search, sucFunc = v => v, failFunc = v => v) {
+  return arr.map(item => {
+    let isCurItem = false
+    if(isObject(search)) {
+      isCurItem = Object.keys(search).reduce((prev, v) => (prev = prev && search[v] == item[v], prev), true)
+    } else if(isFunction(search)) {
+      isCurItem = search(item)
+    }
+    return isCurItem ? sucFunc(item) : failFunc(item)
+  })
+}
+/**
+ * 对象数组去重(根据对象中某个字段)
+ * @param {Object<Array>} arr 需要去重的对象数组
+ * @param {*} field 字段名称
+ * @param {*} type  1：有重复的对象则去遍历到的第一个    -1有重复的则取遍历到的最后一个
+ * @returns 去重后的对象数组
+ * @举例 根据对象中id字段进行去重操作
+ * @举例 uniqueObj([{id:1, age:1}, {id:2, age:12}, {id:1, age: 23}], 'id', 1)  ---->  [{id: 1, age: 1, _sort: 0}, {id: 2, age: 12, _sort: 1}]
+ * @举例 uniqueObj([{id:1, age:1}, {id:2, age:12}, {id:1, age: 23}], 'id', -1) ---->  [{id: 1, age: 23, _sort: 0}, {id: 2, age: 12, _sort: 1}]
+ */
+export const uniqueObj = function (arr, field, type) {
+  const obj = arr.reduce((prev, item, index) => {
+    const existItem = prev[item[field]]
+    const curItem = { ...item, _sort: index}
+    prev[item[field]] = type == 1 ? (existItem || curItem) :
+                        existItem ? { ...item, _sort: existItem._sort } : curItem
+    return prev
+  }, {})
+  return Object.values(obj).sort((a, b) => a._sort - b._sort)
 }
 /**
  * 扁平数组转对象tree树形结构
@@ -228,13 +441,16 @@ export const toObject = function (arr) {
  * @returns {Array} 转换之后的数组
  * @举例 
  * let arr = [{id: 1, name: '部门1', pid: 0},{id: 2, name: '部门2', pid: 1},{id: 3, name: '部门3', pid: 1},{id: 4, name: '部门4', pid: 3},{id: 5, name: '部门5', pid: 4}]
- * arrayToTree(arr) ==> 
- * [{
-    "id": 1,
-    "name": "部门1",
-    "pid": 0,
-    "children": [ { "id": 2, "name": "部门2", "pid": 1, "children": [] }, { "id": 3, "name": "部门3", "pid": 1, "children": [{...},{...}] } ]
-   }]
+ * arrayToTree(arr) 
+ * -----> 
+ * [
+ *   {
+ *     "id": 1,
+ *     "name": "部门1",
+ *     "pid": 0,
+ *     "children": [ { "id": 2, "name": "部门2", "pid": 1, "children": [] }, { "id": 3, "name": "部门3", "pid": 1, "children": [{...},{...}] } ]
+ *   }
+ * ]
  */
 export const array2Tree = function (arr) {
   const itemMap = arr.reduce((prev, item) => (prev[item.id] = { ...item, children: [] }, prev), {})
@@ -252,37 +468,55 @@ export const array2Tree = function (arr) {
 export const once = function(fn) {
   var called = false
   return function () {
-    if (!called) {
-      called = true;
-      fn.apply(this, arguments);
+    if(!called) {
+      called = true
+      fn.apply(this, arguments)
     }
   }
 }
-// 生成一个映射函数，生成一个判断函数，用于判断
-// const isMyStudent = makeMap('小明,小王') // 柯里化生成不同的判断函数
-// isMyStudent('张三')   ===>  false
-export const makeMap = function(str,expectsLowerCase = false) {
+/**
+ * 校验某个字符串是否存在
+ * @param {String} str 字符串
+ * @param {Boolean} expectsLowerCase 期望小写
+ * @returns 一个判断函数
+ * @举例 const isTag = makeMap('div,span', true); isTag('div')
+ */
+export const makeMap = function(str, expectsLowerCase = false) {
   var map = Object.create(null)
   var list = isString(str) ? str.split(',') : str
-  for (var i = 0; i < list.length; i++) {
+  for(var i = 0; i < list.length; i++) {
     map[list[i]] = true
   }
-  return expectsLowerCase ? function (val) { return map[val.toLowerCase()]; } : function (val) { return map[val]; }
+  return expectsLowerCase ? val => map[val.toLowerCase()] : val => map[val]
 }
-// 删除数组中某个元素
-// const arr = ['a', 'b', 'c']
-// remove(arr, 'b') ====> arr变更为['a', 'c']
-export const remove = function(arr, item) {
-  if (arr.length) {
-    var index = arr.indexOf(item);
-    if (index > -1) { return arr.splice(index, 1) }
+/**
+ * 删除数组中某一个元素
+ * @param {*} arr 需要操作的数组
+ * @param {*} item 要删除的条目
+ * @param {*} type 删除类型  0: 代表只删除查到的第一个, 1代表删除查到的全部， -1代表删除查到的最后一个
+ * @returns 删除后的新数组
+ * @举例 remove([1,2,3,4,5,4], 4, 1) ----> [1,2,3,5]
+ * @举例 remove([1,2,3,4,5,4], 4, 0) ----> [1,2,3,5,4]
+ * @举例 remove([1,2,3,4,5,4], 4, -1) ----> [1,2,3,4,5]
+ */
+export const remove = function(arr, item, type = 1) {
+  const mapType = {
+    '-1': () => arr.splice(arr.lastIndexOf(item), 1),
+    '0': () => arr.splice(arr.indexOf(item), 1),
+    '1': () => arr = arr.filter(v => v !== item),
   }
+  return (mapType[type] && mapType[type]()) || arr
 }
-// 数组、字符串元素复制N次 
-// 举例(重复生成数组元素)： repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
-// 举例（重复生成字符串）： repeat('abc', 2) ====>  'abcabc'
-// 字符串复制实现： Array(3).join(0) ====> '00'    "0".repeat(2) ===> '00'
-// 引用类型复制实现： Array(2).fill([{name: '张三'}]) ====> [[{name: '张三'}], [{name: '张三'}]]
+/**
+ * 数组、字符串元素复制N次 
+ * @param {Object|Array} obj 
+ * @param {Number} times 
+ * @returns 复制之后的数据
+ * @举例 重复生成数组元素：repeat([{age:1}], 2) ====>[{age:1, _id: 'asdasd2j2'}, {age:1, _id: '123123c'}]  // 备注增加_id是为了for循环的key值不重复
+ * @举例 重复生成字符串：repeat('abc', 2) ====>  'abcabc'
+ * @举例 字符串复制实现：Array(3).join(0) ====> '00'    "0".repeat(2) ===> '00'
+ * @举例 引用类型复制实现：Array(2).fill([{name: '张三'}]) ====> [[{name: '张三'}], [{name: '张三'}]]
+ */
 export const repeat = function(obj = '', times = 1) {
   let res = isArray(obj) ? [] : ''
   if(isArray(obj)) {
@@ -292,79 +526,156 @@ export const repeat = function(obj = '', times = 1) {
         res = [...res, ...tmp]
       }
     } else {
-      for(let i =0; i < range(times, 1); i++) { res = [...res, ...obj] }
+      for(let i = 0; i < range(times, 1); i++) { res = [...res, ...obj] }
     }
   } else {
     for(let j = 0; j < range(times, 1); j++) { res += obj }
   }
   return res
 }
-// 按照某个字段进行排序。
-// 举例：sortByProp([{name:'ss', age:30}, {name:'dd', age:14}], 'age') ----> [{name:'dd', age:14}, {name:'ss', age:30}]
-// increase不传默认升序， 传false降序
-export const sortByProp = function (arr, str, increase = true) {
-  return arr.sort((a, b) => increase ? a[str] - b[str] : b[str] - a[str])
+/**
+ * 对象数组按照某个字段进行排序
+ * @param {Array} arr 需要排序的对象数组
+ * @param {String} prop 根据这个字段的值进行排序
+ * @param {Number | String} type 排序方式、递增还是递减 1: 递增   -1递减
+ * @returns {Array} 排序后的数组
+ * @举例 举例：sortByProp([{name:'ss', age:30}, {name:'dd', age:14}], 'age') ----> [{name:'dd', age:14}, {name:'ss', age:30}]
+ */
+export const sortByProp = function (arr, prop, type = 1) {
+  return arr.sort(({[prop]: left},  {[prop]: right}) => {
+    if(!isNumber(left) || !isNumber(right)) { throw new Error('您输入的参数有误') }
+    return type == 1 ? left - right : right - left
+  })
 }
 /**
-* 数组去重
-* 举例： noSame([1,2,3,4,'1'])
-*/
+ * 数组去重
+ * @param {Array} arr 
+ * @returns 
+ * 举例： noSame([1,2,3,4,'1'])
+ */
 export const noSame = function(arr) {
   const newData = arr.reduce((prev, item) => (prev.set(item, item), prev), new Map())
   return [...newData.keys()]
 }
-//递归解析数组中某个字段最深层该字段数组平铺。举例子：获取数组中每个对象的最深层的child属性
-// const arr = [{ 
-//   name: 'a',
-//   child:[{
-//       name:'b',
-//       child: [ { name:'c' }]
-//   }]
-// }]
-//getAreaFlat(arr, 'child')------> [{name:'c'}]
-export const getAreaFlat = function (arr, props) {
-  if(arr.some(item => isArray(item[props]) && item[props].length)) {
-    arr = arr.reduce((prev, item) => isArray(item[props]) && item[props].length ? [...prev, ...item[props]] : [...prev, item], [])
-    return getAreaFlat(arr, props)
+/**
+ * 递归解析数组中某个字段最深层该字段数组平铺。举例子：获取数组中每个对象的最深层的child属性
+ * @param {*} arr 
+ * @param {*} props 
+ * @returns
+ * const arr = [{name: 'a', children: [{name: 'b', children:[{ name:'c'}]}]}, {name: 'd', children: [{name: 'e', children:[{ name:'f'}]}]}]
+ * getDeepItem(arr, 'children') ------> [{name:'c'}, {name:'f'}]
+ */
+export const getDeepItem = function (arr, field) {
+  if(arr.some(item => isArray(item[field]) && item[field].length)) {
+    arr = arr.reduce((prev, item) => isArray(item[field]) && item[field].length ? [...prev, ...item[field]] : [...prev, item], [])
+    return getAreaFlat(arr, field)
   } else {
     return arr
   }
 }
-// 获取某个数组中某个字段的值，拼接成字符串。
-// 举例： const arr = [{name:'a'}, {name:'b'}]
-// getField(arr, 'name')----> 'a,b'
-export const getField = function (arr, field, split = ',') {
-  return arr.reduce((prev, item) => [...prev, item[field]], []).join(split)
+/**
+ * 对象数组，按照某个字段，进行递归平铺
+ * @param {*} arr 需要平铺的数组
+ * @param {*} props 
+ * @returns
+ * @举例
+ * const arr = [
+ *  { name: 'a', children: [ { name: 'b', children: [{ name: 'c', children: [] }]}] },
+ *  { name: 'd', children: [ { name: 'e', children: [{ name: 'f', children: [] }]}] }
+ * ]
+ * flatArr(arr, 'children')
+ * ---->
+ * [
+ *  {name: 'a', children: []}, {name: 'b', children: []}, {name: 'c', children: []},
+ *  {name: 'd', children: []}, {name: 'e', children: []}, {name: 'f', children: []}
+ * ]
+ */
+export const flatArr = function (arr, field) {
+  if(arr.some(item => isArray(item[field]) && item[field].length)) {
+    arr = arr.reduce((prev, item) => {
+      const curItem = deepCopy(item)
+      curItem[field] = []
+      return isArray(item[field]) && item[field].length ? [...prev, curItem, ...item[field]] : [...prev, item]
+    }, [])
+    return flatArr(arr, field)
+  } else {
+    return arr
+  }
 }
-// 获取某个数组中字段isChecked为true的条目。并取出其中特定字段。
-// 举例：const arr = [{id:1, isChecked: true}, {id:2, isChecked:false}, {id:2, isChecked:true}]
-// getChecked(arr, 'id')  ---> 1,2
-export const getChecked = function (arr, field, checkStr = 'isChecked', split = ',') {
-  return arr.reduce((prev, item) => (item[checkStr] && prev.push(item[field]), prev), []).join(split)
+/**
+ * 获取特定条件的对象数组中，满足条件的对象的字段值，并拼接好
+ * @param {*} arr 需要处理的数组
+ * @param {*} field 需要获得的字段
+ * @param {Function|Object} search 过滤函数|过滤对象，如果不传则返回全部数组中的字段值     如果传了函数，则先按照函数过滤一遍 
+ * @param {*} split 分隔符---默认值是逗号
+ * @returns 得到的字段值拼接的字符串
+ * @举例 getField([{id:1, age: 15}, {id: 2, age: 18}, {id:3, age: 20}], 'id', v => v.age > 16) --->  '2,3'
+ * @举例 getField([{id:1, age: 15}, {id: 2, age: 18}, {id:3, age: 20}], 'id', {age:18}) --->  '2'
+ */
+export const getField = function(arr, field, search, split = ',') {
+  return arr.reduce((prev, item) => {
+    let isCurItem = true
+    if(isObject(search)) {
+      isCurItem = Object.keys(search).reduce((prev, v) => (prev = prev && search[v] == item[v], prev), true)
+    } else if(isFunction(search)) {
+      isCurItem = search(item)
+    }
+    return isCurItem ? [...prev, item[field]] : prev
+  }, []).join(split)
 }
 // 数组分块
 // 举例子： chunk([1,2,3,4,5], 2) ====>   [[1,2], [3, 4], [5]]
 export const chunk = function (arr, size = 0) {
-  if(!isArray(arr)) {throw new Error('arr必须是数组类型')}
+  if(!isArray(arr)) { throw new Error('arr必须是数组类型') }
   size = Number(size)
-  if(!isGt0(size)) {throw new Error('size必须为大于0的整数')}
+  if(!isGt0(size)) { throw new Error('size必须为大于0的整数') }
   var targetArr = []
   for(var i = 0; i < arr.length; i += size) {
-    targetArr.push(arr.slice(i, i + size));
+    targetArr.push(arr.slice(i, i + size))
   }
   return targetArr
 }
+/**
+ * 数组分割
+ * @param {Array} arr 需要进行分割的数组
+ * @param {Array} num 分割的位置
+ * @returns {Array} 
+ * @举例  splitAt([1,2,3,4,5], 2) ---> [[1,2], [3,4,5]]
+ */
+export const splitAt = (arr, num) => [arr.slice(0, num), arr.slice(num)]
+/**
+ * 二维数组行列互换
+ * @param {Array<Array>} arr 需要行列互换的二维数组
+ * @returns {Array<Array>} 
+ * @举例  transformArr([['a','b','c'], [0, 1, 2]]) ---> [['a', 0], ['b', 1], ['c', 2]]
+ */
+export const transformArr = arr => arr[0].map((col, i) => arr.map(row => row[i]))
+/**
+ * 数组条件分割
+ * @param {Array} arr 需要进行分割的数组
+ * @param {Array} num 分割的位置
+ * @returns {Array} 
+ * @举例  splitWhen([1,2,3,4,5], item => item === 3) ---> [[1,2], [3,4,5]]
+ */
+export const splitWhen = (arr, fn) => {
+  return splitAt(arr, arr.findIndex(item => fn(item)))
+} 
 // 数组（a 相对于 b 的）交集
 // 举例子: intersect([1,2,3], [1,2]) ====> [1, 2]
 export const intersect = function (arr1, arr2){
-  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  if(!isArray(arr1) || !isArray(arr2)) { throw new Error('参数必须是数组类型') }
   const tmp = new Set(arr2)
   return arr1.filter(x => tmp.has(x))
 }
-// 数组（a 相对于 b 的）差集
-// 举例子: difference([1,2,3], [1,2]) ====> [3]
+/**
+ * 数组（a 相对于 b 的）差集
+ * @param {*} arr1 数组1
+ * @param {*} arr2 数组2
+ * @returns 
+ * @举例子 difference([1,2,3], [1,2,7]) ====> [3]
+ */
 export const difference = function (arr1, arr2){
-  if(!isArray(arr1) || !isArray(arr2)) {throw new Error('参数必须是数组类型')}
+  if(!isArray(arr1) || !isArray(arr2)) { throw new Error('参数必须是数组类型') }
   const b = new Set(arr2)
   return arr1.filter(x => !b.has(x))
 }
@@ -373,17 +684,28 @@ export const difference = function (arr1, arr2){
 ******************************************JSON操作*********************************************
 **********************************************************************************************
 */
-// 格式化JSON, 将null, undefined,转换为''，否则后端会认为undefined和null为字符串导致bug
-// 举例子：formatJSON({name:null, age:undefined, school: '清华大学'}) ---> {name:'', age:'', school: '清华大学'}
+/**
+ * 格式化JSON, 将null, undefined,转换为''，否则后端会认为undefined和null为字符串导致bug
+ * @param {*} obj
+ * @returns 
+ * @举例子 formatJSON({name:null, age:undefined, school: '清华大学'}) ---> {name:'', age:'', school: '清华大学'}
+ */
 export const formatJSON = function (obj) {
-  if(!isObject(obj)) { return {} }
-  return Object.keys(obj).reduce((prev, item) => {
-    prev[item] = isNull(obj[item]) || isUndefined(obj[item]) || ['undefined', 'null'].includes(obj[item]) ? '' : obj[item]
-    return prev
-  }, {})
+  if(!isReference) { return obj }
+  return isObject(obj) ? Object.keys(obj).reduce((prev, item) => ((prev[item] = isNull(obj[item]) || isUndefined(obj[item])  ? '' : obj[item]), prev), {}) : {}
 }
-// 检查表单必填项是否为空，空则返回第一个为空的字段名。
-// 举例：checkParams({name:'张三', age:'', school:''}) ----> 'age'
+// 格式化后端返回数据，将null转为undefined，后续写代码需要解构赋值的时候，赋默认值{}或者[]
+export const formatRes = function (obj) {
+  if(!isReference) { return obj }
+  const filterNull = tmpObj =>  Object.keys(tmpObj).reduce((prev, item) => ((prev[item] = isNull(tmpObj[item]) ? undefined : tmpObj[item]), prev), {})
+  return isArray(obj) ? obj.map(item => filterNull(item)) : filterNull(obj)
+}
+/**
+ * 检查表单必填项是否为空，空则返回第一个为空的字段名。用于做一些必填校验检查
+ * @param {*} obj 
+ * @returns 
+ * @举例 checkParams({name:'张三', age:'', school:''}) ----> 'age'
+ */
 export const checkJSON = function (obj) {
   return Object.keys(obj).find(item => !Boolean(obj[item])) || ''
 }
@@ -396,7 +718,7 @@ export const checkJSON = function (obj) {
  * @returns {String} 返回拼接好的带有参数的链接地址
  * @举例子 JSON2url('../advise/index', { from: 'index', id_str:'1243' }) -----> '../advise/index?from=index&id_str=1243'
  */
- export const JSON2url = function (url = '', params = {}, type = 1){
+export const JSON2url = function (url = '', params = {}, type = 1){
   return Object.keys(formatJSON(params)).reduce((prev, item) => {
     let val = JSON.stringify(params[item])
     val = type == 1 ? encodeURIComponent(val) : val // 为了适配更多的场景，开发了自定义是否编码
@@ -436,7 +758,7 @@ export const url2JSON = function (url = '', type = 1) {
  * }
  * @result 根据分类函数分类好的结果：{A: [{...},{...}], B: [{...}], C: [{...}], D: [{...}]}
  */
- export const groupBy = function (arr, callback){
+export const groupBy = function (arr, callback){
   return arr.reduce((prev, item) => {
     const key = callback(item)
     ;(prev[key] || (prev[key] = [])).push(item)
@@ -452,65 +774,51 @@ export const url2JSON = function (url = '', type = 1) {
  * @param {*} val 目标id更新之后的值
  * @param {*} defVal 非目标id更新之后的值
  * @returns {Array}
- * 举例 syncBgData([{id:'1'}, {id:'2'}, {id:'3'}], '2,3')
+ * @举例
+ * syncBgData([{id:'1'}, {id:'2'}, {id:'3'}], '2,3')
+ * ----->
  * [{id:'1', isChecked:false}, {id:'2', isChecked:true}, {id:'3', isChecked:true}]
  */
- export const syncBgData = (arr, ids, key = 'isChecked', val = true, defVal = false) => arr.map(v => (v[key] = ids.includes(v.id) ? val : defVal, v))
-//base64数据导出文件，文件下载
+export const syncBgData = (arr, ids, key = 'isChecked', val = true, defVal = false) => arr.map(v => (v[key] = ids.includes(v.id) ? val : defVal, v))
 /**
- * @举例 downloadFile('活动表格', 'http://xxxxxxx')
+ * base64数据导出文件，文件下载
+ * @举例 downloadFile('test.zip', 'https://yiluyouni.hlxapps.com/assets/zip/2940911562140942420.zip')
  */
-export const downloadFile = function (filename, data){
-  let DownloadLink = document.createElement('a')
-  if (DownloadLink) {
-    document.body.appendChild(DownloadLink)
-    DownloadLink.style = 'display: none'
-    DownloadLink.download = filename
-    DownloadLink.href = data
-    if (document.createEvent){
-      let DownloadEvt = document.createEvent('MouseEvents')
-      DownloadEvt.initEvent('click', true, false)
-      DownloadLink.dispatchEvent(DownloadEvt)
-    }
-    else if ( document.createEventObject ){
-      DownloadLink.fireEvent('onclick')
-    } else if (typeof DownloadLink.onclick == 'function' ) {
-      DownloadLink.onclick()
-    }
-    document.body.removeChild(DownloadLink)
-  }
+export const downloadFile = function (fileName, data){
+  // const url = window.URL.createObjectURL(new Blob([response]))
+  const link = window.document.createElement('a')
+  link.style.display = 'none'
+  link.href = response
+  // link.setAttribute('download', fileName)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
 }
 // 打开全屏
 export const toFullScreen = function (){
-  let el = document.documentElement;
-  let rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen;
-  //typeof rfs != "undefined" && rfs
-  if (rfs) {
-    rfs.call(el);
-  }else if (typeof window.ActiveXObject !== "undefined") {
+  let el = document.documentElement
+  let rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen
+  if(rfs) {
+    rfs.call(el)
+  } else if (typeof window.ActiveXObject !== "undefined") {
     //for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
-    let wscript = new ActiveXObject("WScript.Shell");
-    if (wscript != null) {
-      wscript.SendKeys("{F11}");
-    }
+    let wscript = new ActiveXObject("WScript.Shell")
+    if (wscript != null) { wscript.SendKeys("{F11}") }
   }else{
-    alert("浏览器不支持全屏");
+    alert("浏览器不支持全屏")
   }
 }
 // 退出全屏
 export const exitFullscreen = function (){
-  let el = parent.document;
+  let el = parent.document
   let cfs = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullScreen
-  //typeof cfs != "undefined" && cfs
   if (cfs) {
     cfs.call(el)
-  }else if (typeof window.ActiveXObject !== "undefined") {
+  } else if (typeof window.ActiveXObject !== "undefined") {
     //for IE，这里和fullScreen相同，模拟按下F11键退出全屏
     let wscript = new ActiveXObject("WScript.Shell")
-    if (wscript != null) {
-      wscript.SendKeys("{F11}")
-    }
-  }else{
+    if (wscript != null) { wscript.SendKeys("{F11}") }
+  } else {
     alert("切换失败,可尝试Esc退出")
   }
 }
@@ -519,16 +827,18 @@ export const exitFullscreen = function (){
  * @param lower 下限
  * @param upper 上限
  * @param type 数据类型  float：浮点型    int：整型
+ * @范围 [lower, upper)  // 请注意：左闭右开
  * @举例 random(0, 0.5) ==> 0.3567039135734613
  * @举例 random(1, 2) ===> 1.6718418553475423
  * @举例 random(-2, -1) ==> -1.4474325452361945
+ * @举例 random(1, 8) ==> 6
  * 原生参考代码:  a = new Date % 100; // 两位整数随机数
- * a = new Date % 1000; // 三位整数随机数
- * a = new Date % 10000; // 四位整数随机数...依次类推
+ * a = new Date % 1000 // 三位整数随机数
+ * a = new Date % 10000 // 四位整数随机数...依次类推
  */
 export const random = function (lower, upper, type = 'float') {
-  lower = +lower || 0
-  upper = +upper || 0
+  lower = Number(lower) || 0
+  upper = Number(upper) || 0
   let res = Math.random() * (upper - lower) + lower
   if(type !== 'float') { res = round(res) }
   return res
@@ -537,18 +847,14 @@ export const random = function (lower, upper, type = 'float') {
  * 获取随机颜色
  * @returns 
  */
- export const randomColor = function () {
+export const randomColor = function () {
   const [r, g, b, a] = [random(0, 255,'int'), random(0, 255,'int'), random(0, 255,'int'), 1]
   return `rgba(${r}, ${g}, ${b}, ${a})`
 }
 // 禁止复制
-/*
-['contextmenu', 'selectstart', 'copy'].forEach(function(ev){
-    document.addEventListener(ev, function(event){
-      return event.returnValue = false
-    })
-})
-*/
+export const noCopy = function () {
+  ;['contextmenu', 'selectstart', 'copy'].forEach(ev => document.addEventListener(ev, event => (event.returnValue = false)))
+}
 /**
  * 获取部分字段。举例：
  * @param obj 需要读取的对象
@@ -560,23 +866,12 @@ export const random = function (lower, upper, type = 'float') {
  */
 export const getProps = function (obj, props) {
   if(!isObject(props)) { throw new Error('参数有误，参数必须为object') }
-  if(isArray(obj)) {
-    return obj.map(item => {
-      return Object.keys(props).reduce((prev, v) => {
-        prev[v] = isObject(props[v]) ? getProps(item[v], props[v]) : item[v] || ''
-        return prev
-      }, {})
-    })
-  }else if(isObject(obj)) {
-    return Object.keys(props).reduce((prev, item) => {
-      prev[item] = isObject(props[item]) ? getProps(obj[item], props[item]) : obj[item] || ''
-      return prev
-    }, {})
-  } else {
-    return obj
-  }
+  const filterProps = tmpObj => Object.keys(props).reduce((prev, v) => {
+    return (prev[v] = isObject(props[v]) ? getProps(tmpObj[v], props[v]) : tmpObj[v] || ''), prev
+  }, {})
+  if(!isReference) { return obj }
+  return isArray(obj) ? obj.map(item => filterProps(item)) : filterProps(obj)
 }
-
 /**
  * 保证json格式数据的可靠获取
  * @param run 需要执行的函数
@@ -587,7 +882,8 @@ export const getProps = function (obj, props) {
  */
 export const safeGet = function (run, defaultVal = '') {
   try {
-    return run() || defaultVal
+    const res = run()
+    return isUndefined(res) || isNull(res) ? defaultVal : res
   } catch(e) {
     return defaultVal 
   } 
@@ -595,7 +891,7 @@ export const safeGet = function (run, defaultVal = '') {
 
 /*
 **********************************************************************************************
-******************************************金额操作*********************************************
+******************************************金额、数字操作*********************************************
 **********************************************************************************************
 */
 /**
@@ -612,14 +908,20 @@ export const formatMoney = function (num = 0, type = 'float', prec = 2, dec = '.
   num = String(num).replace(/[^0-9+-Ee.]/g, '') || '0'
   prec = Number(prec)
   if((type === 'intFloat' && !num.includes('.')) || num === '0') { return num }
-  let [intStr = '', floatStr = ''] = round(num, prec).split(dec) // 分割出整数和小数部分
+  let [intStr = '', floatStr = ''] = String(round(num, prec)).split(dec) // 分割出整数和小数部分
   let re = /(-?\d+)(\d{3})/ // 匹配整数部分每个三位数
-  while (re.test(intStr)) {
-    intStr = intStr.replace(re, "$1" + sep + "$2") // 整数部分三位数添加分隔符如','
-  }
+  while (re.test(intStr)) { intStr = intStr.replace(re, "$1" + sep + "$2") } // 整数部分三位数添加分隔符如','
   floatStr += new Array(prec + 1).join('0')
   return `${intStr}${dec}${floatStr.slice(0, prec)}`
 }
+/**
+ * 0、1转换--------'0'、'1'转换
+ * @param {*} val 
+ * @returns 
+ * @举例子 toogle01(0) ---> 1  、  toogle01('0') ---> '1'
+ * @举例子 toogle01(1) ---> 0  、  toogle01('1') ---> '0'
+ */
+ export const toogle01 = val => isNumber(val) ? val ^ 1 : String(Number(val) ^ 1)
 /**
  * 四舍五入返回N位有效数字（常用于金额计算）
  * @param num 需要处理的的数字、支持传入字符串
@@ -639,136 +941,180 @@ export const round = function (num, prec = 0) {
  * @param min 限制最小值
  * @param max 限制最大值
  * @举例 range(12.23, 7, 10)  ===> 10 // 上限为10 因此返回10
- * @举例 range(12.23, 14, 20)  ===> 14 // 下限为14 因此返回10
+ * @举例 range(12.23, 14, 20)  ===> 14 // 下限为14 因此返回14
  */
 export const range = function (num, min = null, max = null) {
-  if(min !== null) {
-    num = Number(num) < Number(min) ? min : num
-  }
-  if(max !== null) {
-    num = Number(num) > Number(max) ? max : num
-  }
+  num = Number(num)
+  if(min !== null) { num = Math.max(num, Number(min)) }
+  if(max !== null) { num = Math.min(num, Number(max)) }
   return num
+}
+/**
+ * 大数相加
+ * @param {String | Number} num1 
+ * @param {String | Number} num2 
+ * @returns 相加后的大数
+ * @举例 largeNumAdd('123000000000000000000000000010', '123000000000000000000000000009') ----> '246000000000000000000000000019'
+ */
+export const largeNumAdd = function (num1, num2){
+  ;[num1, num2] = [String(num1), String(num2)]
+  let maxLen = Math.max(num1.length, num2.length)
+  ;[num1, num2] = [addZero(num1, maxLen).split('').map(v => parseInt(v)), addZero(num2, maxLen).split('').map(v => parseInt(v))]
+  const res = num1.reduceRight((prev, item, index) => {
+    const figure = item + num2[index] + prev.carry
+    return { sum: String(figure % 10) + prev.sum, carry: Math.floor(figure / 10) }
+  }, {sum:'', carry: 0})
+  return res.sum
 }
 /*
 **************日期时间操作********************
 */
 /**
- * 获取日期字符串。
- * @param AddDayCount 传0代表今天，传1代表明天
- * @param split 日期分割符
- * @举例 getDateStr(0) ---> 20200904    getDateStr(1) ---> 20200905
- * @举例 分割：getDateStr(1, '-')--->2020-09-05
- */
-export const getDateStr = function (AddDayCount = 0, split = '') {
-  const dt = new Date()
-  dt.setDate(dt.getDate() + AddDayCount) // 获取AddDayCount天后的日期
-  return `0000${dt.getFullYear()}`.slice(-4) + split + `00${(dt.getMonth() + 1)}`.slice(-2) + split + `00${dt.getDate()}`.slice(-2)
-}
-/**
- * 获取星期几， 不传默认是今天
- * @param t 时间格式字符串比如： '2021-10-01'   当然，也同时支持传入new date('2021-10-01')生成的对象
- * @举例 getDay('2020-03-05') ---> 返回的就是这个日期对应的星期几
- * @举例 getDay() // 默认返回当天星期几
- */
-export const getDay = function (t = new Date()) {
-  if(!isDate(t)) { t = t.replace(/[-]/g, "/") } // 为了兼容ios
-  let day = t ? new Date(t).getDay() : new Date().getDay()
-  return '星期' + "日一二三四五六"[day]
-}
-/**
- * 获取时间
- * @param t 时间格式字符串比如： '2021-10-01'   当然，也同时支持传入new date('2021-10-01')生成的对象
- * @举例 socketTime('2020-03-05') ---> 返回的就是2020年3月5日的年月日数据
- * @举例 socketTime() // 默认返回当天数据
+ * 获取时间段，业务
+ * @returns 
+ * 昨天起止时间、今天的起止时间、上周的起止时间、当前周的起止时间、当前是星期几 ---->  带有时分秒的截止时间
+ * @举例
+ * socketTime()
+ * ----->
+ * {
+ *   curWeek: (2) ['2022-07-25', '2022-07-31'], // 本周
+ *   lastWeek: (2) ['2022-07-18', '2022-07-24'], // 上周
+ *   today: "2022-07-30", // 今天
+ *   week: 6, // 周几
+ *   weekDay: "星期六", // 周几中文
+ *   yesterday: "2022-07-30", // 昨天
+ *   _curWeek: (2) ['2022-07-25 00:00:00', '2022-07-31 23:59:59'], // 本周
+ *   _lastWeek: (2) ['2022-07-18 00:00:00', '2022-07-24 23:59:59'], // 上周
+ *   _today: (2) ['2022-07-30 00:00:00', '2022-07-30 23:59:59'], // 今天
+ *   _yesterday: (2) ['2022-07-30 00:00:00', '2022-07-30 23:59:59'], // 昨天
+ * }
  */
 export const socketTime = function (t = new Date()) {
-  if(!isDate(t) && isString(t)) { t = t.replace(/[-]/g, "/") }
+  if(!isDate(t) && isString(t) && !t.includes('T') && t.length > 0) { t = t.replace(/[-]/g, "/") }
+  if(!t) { t = new Date() }
   const dt = new Date(t)
-  const year = String(dt.getFullYear())
-  const _month = String(dt.getMonth() + 1)
-  const month = addZero(_month, 2)
-  const day = addZero(dt.getDate(), 2)
-  const _day = String(dt.getDate())
-  const weekDay = String(dt.getDay())
-  const _weekDay = '星期' + "日一二三四五六"[weekDay]
-  const hour = addZero(dt.getHours(), 2)
-  const minutes = addZero(dt.getMinutes(), 2)
-  const seconds = addZero(dt.getSeconds(), 2)
-  return { year, month, _month, day, _day, weekDay, _weekDay, hour, minutes, seconds }
+  const [week, daySeconds] = [dt.getDay(), 1000 * 60 * 60 * 24] 
+  const minusDay = week !== 0 ? week - 1 : 6
+  const [dateStr, startStr, endStr, curSecond, yesterDayStart] = ['YYYY-MM-DD', 'YYYY-MM-DD 00:00:00', 'YYYY-MM-DD 23:59:59', dt.getTime(), curSecond - daySeconds]
+  const weekDay = '星期' + "日一二三四五六"[week]
+  // 昨天
+  const yesterday = dateFormater(dateStr, yesterDayStart)
+  const _yesterday = [dateFormater(startStr, yesterDayStart), dateFormater(endStr, yesterDayStart)]
+  // 今天
+  const today = dateFormater(dateStr, dt)
+  const _today = [dateFormater(startStr, dt), dateFormater(endStr, dt)]
+  // 上周
+  const [lastWeekStart, lastWeekEnd] = [curSecond - (minusDay + 7) * daySeconds, curSecond - (minusDay + 1) * daySeconds]
+  const lastWeek = [dateFormater(dateStr, lastWeekStart), dateFormater(dateStr, lastWeekEnd)]
+  const _lastWeek = [dateFormater(startStr, lastWeekStart), dateFormater(endStr, lastWeekEnd)]
+  // 本周
+  const [curWeekStart, curWeekEnd] = [curSecond - minusDay * daySeconds, curSecond + (6 - minusDay) * daySeconds]
+  const curWeek = [dateFormater(dateStr, curWeekStart), dateFormater(dateStr, curWeekEnd)]
+  const _curWeek = [dateFormater(startStr, curWeekStart), dateFormater(endStr, curWeekEnd)]
+  return { yesterday, _yesterday, today, _today, lastWeek, _lastWeek, curWeek, _curWeek, week, weekDay }
 }
 /**
  * 生成格式化时间字符串
- * @举例 dateFormater('YYYY-MM-DD HH:mm') ==> 2019-06-26 18:30
+ * @param {*} formater 时间格式
+ * @param {*} t 传入的时间
+ * @returns 处理之后的时间数据
+ * @举例 dateFormater('YYYY-MM-DD hh:mm') ==> 2019-06-26 18:30
  * @举例 dateFormater('YYYYMMDD-hh:mm:ss', '2020-08-12 09:13:54') ==> 20200812-09:13:54
-*/
-export const dateFormater = function (formater, t = new Date()){
-  if(!isDate(t) && isString(t)) { t = t.replace(/[-]/g, "/") }
+ */
+export const dateFormater = function (formater = 'YYYY-MM-DD hh:mm:ss', t = new Date()){
+  if(!isDate(t) && isString(t) && !t.includes('T') && t.length > 0) { t = t.replace(/[-]/g, "/") }
+  if(!t) { t = new Date() }
   const dt = new Date(t)
-  const [Y, M, D, h, m, s] = [dt.getFullYear() + '', dt.getMonth() + 1, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds()]
-  return formater.replace(/YYYY|yyyy/g, Y)
-    .replace(/YY/g, Y.slice(2,4))
-    .replace(/MM/g, (M < 10 ? '0' : '') + M)
-    .replace(/DD/g, (D < 10 ? '0' : '') + D)
-    .replace(/hh/g, (h < 10 ? '0' : '') + h)
-    .replace(/mm/g, (m < 10 ? '0' : '') + m)
-    .replace(/ss/g, (s < 10 ? '0' : '') + s)
+  let [Y, y, M, D, h, m, s] = [dt.getFullYear() + '', String(dt.getFullYear()).slice(2, 4), dt.getMonth() + 1, dt.getDate(), dt.getHours(), dt.getMinutes(), dt.getSeconds()]
+  ;[M, D, h, m, s] = [addZero(M, 2), addZero(D, 2), addZero(h, 2), addZero(m, 2), addZero(s, 2)]
+  return formater.replace(/YYYY|yyyy/g, Y).replace(/YY/g, y).replace(/MM/g, M).replace(/DD/g, D).replace(/hh/g, h).replace(/mm/g, m).replace(/ss/g, s)
 }
 /**得到当前时间之后N秒的时间
  * @param {*} after 多少秒之后的时间
  * @举例 afterNsecond(20)  // 20s之后的时间
  */
 export const afterNsecond = function (after = 60) {
-  const dt = new Date()
-  return new Date(dt.getTime() + after * 1000)
+  const dt = new Date().getTime() + after * 1000
+  return new Date(dt)
 }
 /**
  * 将毫秒数转换成天、时、分、秒、毫秒
- * @param {*} leftMs 毫秒数
- * @举例 afterNsecond(60)
+ * @param {String} formater 时间格式
+ * @param {Number} leftMs 剩余的时间，毫秒数
+ * @param {Number} strType 0: 当出现 “0天1小时” 显示为 “1小时”
+ * @returns 
+ * @举例
+ * ms2Dhs('dd天hh小时mm分钟ss秒', 62e3)
+ * --->
+ * {formateStr: '01分钟02秒', d: 0, h: '00', m: '01', s: '02', ms: '500'}
  */
- export const sec2Dhs = function (leftMs){
-  const d = Math.floor(leftMs / 1000 / 60 / 60 / 24)
-  const h = addZero(Math.floor(leftMs / 1000 / 60 / 60 % 24), 2)
-  const m = addZero(Math.floor(leftMs / 1000 / 60 % 60), 2)
-  const s = addZero(Math.floor(leftMs / 1000 % 60), 2)
-  const ms = addZero(Math.floor(leftMs % 1000), 2)
-  return { d, h, m, s, ms }
+export const ms2Dhs = function (formater = 'dd天hh小时mm分钟ss秒', leftMs, strType = 0) {
+  const minute = leftMs / 1000 / 60
+  let [d, h, m, s, ms] = [Math.floor(minute / 60 / 24), Math.floor(minute / 60 % 24), Math.floor(minute % 60), Math.floor(leftMs / 1000 % 60), Math.floor(leftMs % 1000)]
+  if(strType == 0) {
+    let regStr = d > 0 ? 'dd' : h > 0 ? 'hh' : m > 0 ? 'mm' : s > 0 ? 'ss' : ms > 0 ? 'ms' : ''
+    formater = formater.slice(formater.indexOf(regStr))
+  }
+  ;[h, m, s, ms] = [addZero(h, 2), addZero(m, 2), addZero(s, 2), addZero(ms, 3)]
+  return formater.replace(/dd/g, d).replace(/hh/g, h).replace(/mm/g, m).replace(/ss/g, s).replace(/ms/g, ms)
 }
 /**
  * 根据年和月，得出该年月有多少天。（原理：计算出他的下个月， 用它的下个月生成毫秒数-当前月毫秒数再除以一天的毫秒数===天数）
- * @param {String} whichYear 
- * @param {String} whichMonth 
+ * @param {String} year 
+ * @param {String} month 
  * @returns 
  * @举例子 getDays(2021, 11) ---> 30
  */
-export const getDays = function(whichYear, whichMonth) {
-  let nextMoth = Number(whichMonth) + 1
-  let nextYear = Number(whichYear)
-  if (nextMoth === 13) {
-    nextMoth = 1
-    nextYear++
-  }
-  let theCurrentDate = whichYear + '-' + whichMonth + '-1'
-  let theNextDate = nextYear + '-' + nextMoth + '-1'
-  let yearObjOne = new Date(theCurrentDate)
-  let yearObjTwo = new Date(theNextDate)
-  let milliseconds = yearObjTwo.getTime() - yearObjOne.getTime()
+export const getDays = function(year, month) {
+  let nextMoth = Number(month) + 1 == 13 ? 1 : Number(month) + 1
+  let nextYear = Number(month) + 1 == 13 ? Number(year) + 1 : Number(year)
+  let milliseconds = new Date(`${nextYear}-${nextMoth}-1`).getTime() - new Date(`${year}-${month}-1`).getTime()
   let daymilliseconds = 3600 * 24 * 1000
-  return (milliseconds / daymilliseconds)
+  return milliseconds / daymilliseconds
 }
+/**
+ * 日期一和日期二之间的间隔的天数
+ * @param {*} date1 日期一
+ * @param {*} date2 日期二
+ * @returns 
+ * @举例 dayDif("2021-11-3", "2022-2-1") ----> 90
+ */
+export const dayDiff = (date1, date2) => Math.ceil(Math.abs(new Date(date1.replace(/[-]/g, "/")).getTime() - new Date(date2.replace(/[-]/g, "/")).getTime()) / 86400000) // 86400 === 24 * 60 * 60 秒
+/**
+ * 查出日期位于一年中的第多少天
+ * @param {Date || String || Number} date 传入日期
+ * @returns 传入的日期是一年中的第多少天
+ * @举例 dayOfYear(new Date()) ----> 307
+ */
+export const dayOfYear = date => Math.floor((date - new Date(date.slice(0, 4), 0, 0)) / 1000 / 60 / 60 / 24)
 /*
 **********************************************************************************************
 ******************************************正则校验*********************************************
 **********************************************************************************************
 */
 /**正则校验返回true || false
- * @param {*} val 需要正则校验的值
+ * @param {String} val 需要正则校验的值
  * @param {reg} reg 正则表达式
  * @returns {Boolean}
  */
 export const regTest = (val, reg) => new RegExp(reg).test(val)
-
+/*
+**********************************************************************************************
+******************************************温度转换*********************************************
+**********************************************************************************************
+*/
+/**
+ * 温度转换  摄氏度  ---> 华氏度
+ * @param {Number} 摄氏度
+ * @returns 华氏度
+ */
+export const c2f = celsius => celsius * 9 / 5 + 32
+/**
+ * 温度转换 华氏度 ----> 摄氏度
+ * @param {Number} 华氏度
+ * @returns 摄氏度
+ */
+export const f2s = fahrenheit => (fahrenheit - 32) * 5 / 9
 /*
 **********************************************************************************************
 ******************************************业务函数*********************************************
@@ -781,7 +1127,7 @@ export const regTest = (val, reg) => new RegExp(reg).test(val)
  * @param innerHTML 采用传入的html，不使用默认的样式
  * @举例 showToast('请输入手机号码')  // 弹出“请输入手机号码”这个提示，并且1500ms后自动消失
  */
- export const showToast = function (str, time = 1500, type = 0) {
+export const showToast = function (str, time = 1500, type = 0) {
   var pObj = document.createElement("div") // 创建，写内容
   const innerHTML = {
     0: `<div class="nowrap" style="position:fixed;z-index:9999;top:45%;left:50%;transform: translateX(-50%);font-size:0.30rem;padding:0.2rem 0.5rem;background:#4A4A4A;color:#fff;border-radius:0.15rem;min-width:3.8rem;text-align:center;">${str}</div>`,
@@ -789,7 +1135,7 @@ export const regTest = (val, reg) => new RegExp(reg).test(val)
   }
   pObj.innerHTML = innerHTML[type] //添加内容
   document.body.appendChild(pObj)
-  setTimeout(() => document.body.removeChild(pObj), time);
+  setTimeout(() => document.body.removeChild(pObj), time)
 }
 /**
  * 删除css结点
@@ -829,7 +1175,7 @@ export const removeDom = function (id = '') {
  * @param id 这个css的id，方便以后进行删除操作
  * @举例 addDom('<div>234324</div>', 'z-loading')  // 载入的dom
  */
- export const addDom = function (dom = '', id = ""){
+export const addDom = function (dom = '', id = ""){
   removeDom(id) // 删除上次添加的这个id的DOM
   var divObj = document.createElement("div")
   divObj.id = id
@@ -863,7 +1209,7 @@ export const hide = function (id =''){
  * @举例 showLoading()  // 显示出loading转圈圈动画
  * 备注：次函数可以扩展，未来可以支持多种不同的loading，只要传入不同的type值就可以
  */
- export const showLoading = function({str='加载中...', type = 0, dom ='', css = ''} = {}) {
+export const showLoading = function({str='加载中...', type = 0, dom ='', css = ''} = {}) {
   const domObj = {
     0: `<div style="position:fixed;top:0;right:0;bottom:0;left:0;z-index:1000;background:rgba(255,255,255)">
       <div style="position:fixed;top:30%;left:50%;transform:transLateX(-50%);width:150px;text-align:center;">
@@ -911,10 +1257,68 @@ export const setTitle = title => document.title = title
   * @举例 goUrl('https://www.baidu.com')  // 跳转到百度
   */
 export const goUrl = href => window.location.href = href
-
 /**
- * 数据结构
+ * 密码强度检测。备注：这个函数要依据不同的项目的密码强度规则，做对应的改造
+ * @param {String} str 密码
+ * @returns {Number} 密码强度
+ * @举例 checkPwd('ss142152')
  */
+export const checkPwd = (str) => {
+  var Lv = 0
+  if (str.length < 6) { return Lv } 
+  if (/[0-9]/.test(str)) { Lv++ } // 数字+1
+  if (/[a-z]/.test(str)) { Lv++ } // 小写字母+1
+  if (/[A-Z]/.test(str)) { Lv++ }  // 大写字母+1
+  if (/[\.|-|_!@#$%^&*()`]/.test(str)) { Lv++ } // 特殊字符+1
+  return Lv
+}
+/*
+**********************************************************************************************
+******************************************网络安全*********************************************
+**********************************************************************************************
+*/
+// https://juejin.cn/post/7033697067390205966
+// https://juejin.cn/post/7013335205054251044
+// npm install xss
+// import filterXSS from "xss"
+/*
+**********************************************************************************************
+******************************************函数处理（组合拆分）*********************************
+**********************************************************************************************
+*/
+/**
+ * 组合函数
+ * @param  {...Function} funcs
+ * @举例 传入多个函数参数
+ * @举例 const newFunc = compose(trim, upperCase) // 先去除空格，在转大写（从左往右执行）。
+ * @举例 newFunc(' asfd d ')
+ * @returns 组合后的函数 
+ */
+export const compose = (...funcs) => x => funcs.reduce((prev, fn) => fn(prev), x) // 如果想反向可以reduceRight,反向遍历
+/**
+ * https://juejin.cn/post/6844903490771222542#heading-1
+ * 柯里化函数
+ * @param  {...Function} funcs 传入一个需要柯里化的函数
+ * @举例1 var fn = curry(function(a, b, c) { console.log([a, b, c]) })
+ *       var fn1 = fn('a') // 进行柯里化，传入的一个参数作为固定参数，返回新函数
+ *       fn1('2', '3') // ['a', '2', '3']
+ *       fn1('b', 'c') // ['a', 'b', 'c']
+ * @举例2 var fn = curry(function(a, b, c) { console.log([a, b, c]);}, ['a']) // 也就是构建柯里化的时候也能顺便传入参数
+ *        fn1('2', '3') // ['a', '2', '3']
+ *        fn1('b', 'c') // ['a', 'b', 'c']
+ * @returns 返回如果参数全了就返回计算后结果，否则产生柯里化之后的函数
+ */
+export const curry = function (fn, args = []) {
+  return function() {
+    var newArgs = [...args, ...arguments]
+    return newArgs.length < fn.length ? curry.call(this, fn, newArgs) : fn.apply(this, newArgs)
+  }
+}
+/*
+**********************************************************************************************
+******************************************数据结构*********************************************
+**********************************************************************************************
+*/
 /**
  * Map
  * @属性方法 .size()   .set(key, value)   .get(key)   .has(key)   .delete(key)   .clear()
@@ -927,7 +1331,7 @@ export const goUrl = href => window.location.href = href
  */
 /**
  * 键值数组转对象
- * @param map map对象
+ * @param {Map} Map对象
  * @举例 map2Obj(new Map([[1, 'one'], [2, 'two']]))  // {1: 'one', 2: 'two'}
  */
 export const map2Obj = function (map){
@@ -937,7 +1341,7 @@ export const map2Obj = function (map){
 }
 /**
  * JSON转键值数组
- * @param map map对象
+ * @param {Map} Map对象
  * @举例 obj2Map({1: 'one', 2: 'two'}) // [[1, 'one'], [2, 'two']]
  */
 export const obj2Map = function (obj){
@@ -951,14 +1355,14 @@ export const obj2Map = function (obj){
  * @param {*} obj 需要逆转的对象
  * @returns 
  */
- export const invert = obj => Object.keys(obj).reduce((prev, item) => ((prev[obj[item]] = item), prev), {})
+export const invert = obj => Object.keys(obj).reduce((prev, item) => ((prev[obj[item]] = item), prev), {})
  /**
   * 逆转对象。并且重复的键，将对应的值存在一起
   * @举例子 invertBy({ 'a': 1, 'b': 2, 'c': 1 }) -----> {1: ['a', 'c'], 2: ['b']}
   * @param {*} obj 需要逆转并且分类的对象
   * @returns 
   */
- export const invertBy = obj => Object.keys(obj).reduce((prev, item) => ((prev[obj[item]] || (prev[obj[item]] = [])).push(item), prev), {})
+export const invertBy = obj => Object.keys(obj).reduce((prev, item) => ((prev[obj[item]] || (prev[obj[item]] = [])).push(item), prev), {})
 /**
  * 链表
  */
