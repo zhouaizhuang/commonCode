@@ -1,5 +1,5 @@
 // 可中止的promise
- class AllowCancelPromise {
+class AllowCancelPromise {
   constructor() {
     this._pendingPromise = new Map()
     this._reject = new Map()
@@ -9,10 +9,9 @@
     if (this._pendingPromise.get(url)) { this.cancel('取消重复请求', url) }
     const promiseA = new Promise((_, reject) => this._reject.set(url, reject))
     this._pendingPromise.set(url, Promise.race([requestFn(), promiseA]))
-    return Promise.race([requestFn(), promiseA]).then(res => {
+    return Promise.race([requestFn(), promiseA]).then(res => res).finally(e => {
       this._pendingPromise.delete(url)
       this._reject.delete(url)
-      return res
     })
   }
   cancel(reason, url) {
