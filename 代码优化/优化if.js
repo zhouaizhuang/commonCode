@@ -23,13 +23,13 @@ export const calcDays = function (){
   }
 }
 // ------> 优化
-export const calcDays = function (){
+export const calcDays1 = function (){
   const dt = new Date()
   const nums = String(dt.getDay())
   return '周' + ['日', '一', '二', '三', '四', '五', '六'][nums]
 }
 // ------> 进一步优化
-export const calcDays = function (){
+export const calcDays2 = function (){
   const dt = new Date()
   const nums = dt.getDay()
   return `周${'日一二三四五六'[nums]}`
@@ -56,7 +56,7 @@ export const onButtonClick = status =>{
   }
 }
 // ============> 第一步优化
-export const onButtonClick = status =>{
+export const onButtonClick1 = status =>{
   const mapPath = {
     1: 'IndexPage',
     2: 'FailPage',
@@ -69,24 +69,12 @@ export const onButtonClick = status =>{
   jumpTo(path)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 /********************************************************************* */
 /********************************************************************* */
 /******************3、需求更加复杂，不仅仅需要跳转、还要发消息************ */
 /********************************************************************* */
 /********************************************************************* */
-export const onButtonClick = status =>{
+export const onButtonClick2 = status =>{
   if(status == 1){
     sendLog('processing')
     jumpTo('IndexPage')
@@ -107,9 +95,8 @@ export const onButtonClick = status =>{
     jumpTo('Index')
   }
 }
-
 //-------->代码优化
-const onButtonClick = (status)=>{
+const onButtonClick3 = (status)=>{
   const actions = {
     '1': ['processing','IndexPage'],
     '2': ['fail','FailPage'],
@@ -123,20 +110,12 @@ const onButtonClick = (status)=>{
   jumpTo(pageName)
 }
 
-
-
-
-
-
-
-
-
 /********************************************************************* */
 /********************************************************************* */
 /************4、下面需求变得进一步复杂了，有if嵌套*********************** */
 /********************************************************************* */
 /********************************************************************* */
-export const onButtonClick = (status,identity)=>{
+export const onButtonClick4 = (status,identity)=>{
   if(identity == 'guest'){
     if(status == 1){
       //do sth
@@ -168,7 +147,7 @@ export const onButtonClick = (status,identity)=>{
   }
 }
 // -------->代码进一步优化
-export const onButtonClick = (status,identity)=>{
+export const onButtonClick5 = (status,identity)=>{
   const actions = new Map([
     ['guest_1', () => {/**do sth */} ],
     ['guest_2', () => {/**do sth */} ],
@@ -185,7 +164,7 @@ export const onButtonClick = (status,identity)=>{
   fn.call(this)
 }
 // ------> 再此基础上进一步优化
-export const onButtonClick = (status,identity)=>{
+export const onButtonClick6 = (status,identity)=>{
   const actions = new Map([
     [{identity: 'guest', status: 1}, () => {/*function A*/}],
     [{identity: 'guest', status: 2}, () => {/*function A*/}],
@@ -202,7 +181,7 @@ export const onButtonClick = (status,identity)=>{
   targetArr.forEach(([key, val]) => val.call(this))
 }
 // ------> 再此基础上进一步优化
-export const onButtonClick = (status, identity)=>{
+export const onButtonClick7 = (status, identity)=>{
   const functionA = ()=>{/*do sth*/}
   const functionB = ()=>{/*do sth*/}
   const functionC = ()=>{/*send log*/}
