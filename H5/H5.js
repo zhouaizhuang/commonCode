@@ -104,3 +104,86 @@ document.addEventListener('touchstart', function () {
 document.addEventListener('touchend', function () {
   clearTimeout(showVConsoleTimer)
 })
+
+
+
+// 微信数字签名验证工具： https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
+let wxInited = false
+async function wxInit () {
+  return new Promise(function (resolve, reject) {
+    if (!client.is_weixin() || wxInited) {
+      resolve();
+      return;
+    }
+    let siteConfig = window.vueRoot.siteConfig;
+    const url = window.location.href.split('#')[0]
+    const obj = {
+      debug: true,
+      appId: siteConfig.wxJssdk["appId"],
+      timestamp: siteConfig.wxJssdk["timestamp"],
+      nonceStr: siteConfig.wxJssdk["nonceStr"],
+      signature: siteConfig.wxJssdk["signature"],
+      url: encodeURIComponent(url),
+      jsApiList: ["updateAppMessageShareData", "updateTimelineShareData"]
+    }
+    wx.config(obj)
+    wx.ready(function () {
+      wxInited = true;
+      resolve();
+    });
+  });
+}
+
+//设置微信分享
+export async function setWxShare (dt) {
+  if (!client.is_weixin() && !client.is_qianfan() && !client.is_mocuz()) return;
+  var title = dt.title;
+  var image = dt.image;
+  let siteConfig = window.vueRoot.siteConfig;
+  if (!image && siteConfig) image = siteConfig.siteWeixinLogo;
+  image = image.replace("imageslim|", "");
+  var description = dt.description;
+  var lineLink = window.location.href;
+  if (client.is_weixin()) {
+    //加载微信js
+    await client.loadWeixinJs();
+    //微信初始化
+    await wxInit();
+    // 分享朋友圈
+    wx.ready(function () { 
+      wx.updateTimelineShareData({ 
+        title, // 分享标题
+        desc: description, // 分享描述
+        link: lineLink, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: image, // 分享图标
+        success: function () {
+          // 设置成功
+        }
+      })
+      // 分享好友
+      wx.updateAppMessageShareData({ 
+        title: title, // 分享标题
+        desc: description, // 分享描述
+        link: lineLink, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: image, // 分享图标
+        success: function () {
+          // 设置成功
+        }
+      })
+    })
+  } else if (client.is_qianfan()) {
+    if (!QFH5) await request.wait(500);
+    try {
+      QFH5.setShareInfo(title, image, description, lineLink, function (
+        state,
+        data
+      ) {
+        if (state != 1) {
+          alert(data.error);
+        }
+      });
+    } catch (e) { }
+  } else if (client.is_mocuz()) {
+    MOJS.showShareButton(title, description, lineLink, image);
+  }
+}
